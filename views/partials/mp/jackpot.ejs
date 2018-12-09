@@ -1,0 +1,115 @@
+<% block('chat', true) %>
+
+<script src="/jackpot/script.js"></script>
+
+<script>
+    const CONC = '<%=game.conc%>'.toUpperCase();
+
+    socket.on('state', data => {
+
+        clear();
+
+        if(data.state === 'showdown') {
+            showdown(data);
+        }
+
+        if(data.chat && data.chat.length > 0) {
+            data.chat.forEach(msg => printChatMsg(msg));
+        }
+
+        updateBank(data.bank);
+        updateProcents(data.procents);
+        updateTimer(data);
+        updateOnline(data.online);
+        updateId(data.gameId);
+        updateHash(data.hash);
+        showState(data.state);
+
+        for(let bet of data.bets) {
+            addBet(bet);
+        }
+    });
+
+    socket.on('bet', data => {
+        updateBank(data.bank);
+        updateProcents(data.procents);
+        addBet(data.bet);
+    });
+
+    socket.on('updateTimer', endTime => {
+        updateTimer({endTime});
+    })
+
+</script>
+
+<div class="jackpot-container">
+<div class="jackpot-panel">
+    <div class="jackpot-textInfo">
+        <p>ID игры: <b><span id="gameId">N</span></b></p>
+        <p>MD5: <b><span id="gameHash">N</span></b></p>
+    </div>
+
+    <div class="jackpot-header">
+        <div>Банк: <b><span class="text-accent" id="gameHeaderBank">1000</span></b>
+            <%=game.conc.toUpperCase()%>
+        </div>
+        <div class="verticalSeparator"></div>
+        <div><span id="gameHeaderTimerTitle">До конца</span>: <b><span class="text-accent" id="gameHeaderTimer">120</span></b> сек.</div>
+    </div>
+    <div class="state-container">
+        <div class="state_bet">
+            <%if(!user) { %>
+            <p class="state_bet_disabled">Вы должны <a href="/login">войти в систему</a> для того, чтобы сделать
+                ставку!</p>
+            <%}%>
+            <h5 class="text-center">Сделать ставку</h5>
+            <small class="text-center">
+                <p class="mb-0">Лимиты ставок в комнате от: <span class="text-warning"><%=game.minBet%>
+                <%=game.conc.toUpperCase()%></span> 
+                    до  <%if(!game.maxBet) { %> 
+                     <span class="text-success">Неограничено</span>
+                    <%} else {%>
+                        <span class="text-success"><%=game.maxBet%><%=game.conc.toUpperCase()%></span>
+                    <%}%>
+                </p>
+                <p class="text-center">Общая сумма ставок не должна превышать лимит!</p>
+            </small>
+            <div class="input-group">
+                <input type="number" id="betValue" class="form-control" value="<%=game.conc==='btc'? 0.0001 : 50%>">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <%=game.conc.toUpperCase()%></span>
+                    <button class="btn btn-success" onclick="doBet()">Внести ставку</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="state_showdown" style="display: none">
+            <div class="roulette-wrapper">
+                <div class="roulette">
+                    <div class="roulette-content">
+                
+                    </div>
+                </div>
+            </div>
+
+            <div class="showdown">
+                <p>Победитель: <b><span id="showdownUsername">???</span></b></p>
+                <p>Выигрышный билет: <b><span id="showdownTicket">???</span></b></p>
+                <p>Число игры: <b><span id="showdownGameNumber">???</span></b></p>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="">
+    <div class="jackpot-procents">
+
+    </div>
+    <ul class="jackpot-log list-group">
+
+    </ul>
+</div>
+</div>

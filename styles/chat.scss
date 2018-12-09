@@ -1,0 +1,128 @@
+
+.chat {
+    position: fixed;
+    right: -$szChatWidth;
+    background: $clrDarkerContainer;
+    height: 450px;
+    z-index: 1300;
+    width: 200px;
+    top: 0;
+    top: $szHeaderHeight;
+    transition: right 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+
+    @include adaptive(500px) {
+        top: $szHeaderHeightM;
+        padding-bottom: $szHeaderHeightM;
+    }
+}
+
+body.chat-shown {
+
+    .chat {
+        right: 0;
+    }
+
+    .workspace-container {
+        padding-right: $szChatWidth; 
+    }
+}
+
+.chat_show-btn {
+    width: 30px;
+    height: 30px;
+    background: url(/icons/chat.png);
+    background-size: cover;
+    z-index: 1299;
+    position: fixed;
+    right: 10px;
+    top: 100;
+    top: 100px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.chat_room-selector {
+    width: 90%;
+    margin: 10px auto;
+}
+
+.chat_log {
+    overflow-y: scroll;
+    word-wrap: break-word;
+
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+
+    &::-webkit-scrollbar {
+    width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: $clrAccent;
+    }
+
+}
+
+.chat_editor {
+    // position: fixed;
+    bottom: 0;
+    position: relative;
+    height: 70px;
+    width: $szChatWidth;
+    textarea {
+        color: $clrPrimaryText;
+        background: $clrLighterContainer;
+        height: 100%;
+        width: 100%;
+        font-size: 12px;
+        display: block;
+        border-radius: 15px;
+    }
+
+    .my-btn {
+        font-size: 10px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: auto;
+        border-radius: 15px;
+    }
+}
+
+.chat_message {
+    border-bottom: 1px solid $clrLighterContainer;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.chat_message_title {
+    color: #00a9ff;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 10px;
+}
+
+.chat_message_data {
+    width: 100%;
+}
+
+.chat_avatar {
+    width: 25px;
+    height: 20px;
+    border-radius: 100%;
+    // float: left;
+    margin-right: 10px;
+}
+
+.chat_message_text {
+    margin-bottom: 8px;
+    color: #b1b1b1;
+    font-size: 12px;
+}

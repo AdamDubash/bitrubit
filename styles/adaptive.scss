@@ -1,0 +1,12 @@
+
+@mixin forNormalDisplay {
+    @media (max-width: 810px) {
+        @content;
+    }
+}
+
+@mixin adaptive($mw) {
+    @media (max-width: $mw) {
+        @content;
+    }
+}

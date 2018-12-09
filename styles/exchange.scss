@@ -1,0 +1,33 @@
+.exchagnge {
+
+}
+
+.exchange-block {
+    background: $clrLighterContainer;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 0 10px 10px 0;
+
+    .input-group-text {
+        font-size: 12px;
+        padding: 0 4px;
+    }
+
+    small {
+        font-size: 12px;
+        color: #7b7b7b;
+        word-spacing: 5px;
+    }
+}
+
+.exchange-button {
+    // max-width: 500px;
+    height: 35px;
+    width: 100%;
+    margin: 0 auto;
+
+    .my-btn {
+        width: 100%;
+        background: $clrDarkerContainer;
+    }
+}

@@ -1,0 +1,219 @@
+<!-- deps -->
+<!-- <link rel="stylesheet" type="" href="/chess/css/chessboard-0.3.0.css"> -->
+<link rel="stylesheet" type="" href="/chess/css/chessboard.css">
+<script src="/chess/chess.min.js"></script>
+<!-- <script src="/chess/js/chessboard-0.3.0.min.js"></script> -->
+<script src="/chess/js/chessboard.js"></script>
+
+
+<style type="text/css">
+    .highlight-white {
+        -webkit-box-shadow: inset 0 0 3px 3px yellow;
+        -moz-box-shadow: inset 0 0 3px 3px yellow;
+        box-shadow: inset 0 0 3px 3px yellow;
+    }
+    .highlight-black {
+        -webkit-box-shadow: inset 0 0 3px 3px blue;
+        -moz-box-shadow: inset 0 0 3px 3px blue;
+        box-shadow: inset 0 0 3px 3px blue;
+    }
+
+    .in_check{
+        box-shadow: 0 0 12px 2px red;
+        position: absolute;
+        z-index: 1000 !important;
+        background: lightcoral;
+    }
+</style>
+<script>
+    var board, chess;
+    $(document).ready(() => {
+
+        chess = new Chess();
+
+        const clearPrevHighlight = (color) => {
+            if(color === 'w') {
+                $('.highlight-white').each(function() {
+                    this.classList.remove('highlight-white');
+                })
+            } else {
+                $('.highlight-black').each(function() {
+                    this.classList.remove('highlight-black');
+                })
+            }
+        };
+
+        const highlightMove = (from, to, color) => {
+            from = board.getOrientation() === 'b'
+                ? 63 - ChessUtils.convertNotationSquareToIndex(from)
+                : ChessUtils.convertNotationSquareToIndex(from);
+            to = board.getOrientation() === 'b'
+                ? 63 - ChessUtils.convertNotationSquareToIndex(to)
+                : ChessUtils.convertNotationSquareToIndex(to);
+
+            clearPrevHighlight(color);
+
+            if(color === 'w') {
+                $(`#boardContainer_chess_square_${from}`)[0].classList.add('highlight-white')
+                $(`#boardContainer_chess_square_${to}`)[0].classList.add('highlight-white')
+            } else {
+                $(`#boardContainer_chess_square_${from}`)[0].classList.add('highlight-black')
+                $(`#boardContainer_chess_square_${to}`)[0].classList.add('highlight-black')
+            }
+        };
+
+        const clearCheck = () => {
+            ($('.in_check').length > 0) && ($('.in_check')[0].classList.remove('in_check'));
+        }
+
+        const highlightCheck = () => {
+            const color = chess.turn() === 'w' ? 'white' : 'black';
+            $(`.chess_piece_king.chess_player_${color}`)[0].parentNode.classList.add('in_check');
+        }
+
+
+        const initBoard = (data) => {
+            console.log(data)
+            board.clear();
+
+            board = new Chessboard('boardContainer', {
+                position: ChessUtils.FEN.startId,
+                eventHandlers: {
+                    onPieceSelected: pieceSelected,
+                    onMove: pieceMove
+                }
+            });
+
+            board.setOrientation(data.orientation);
+        }
+
+
+        socket.on('start', initBoard)
+
+        socket.on('render', data => {
+            console.log(data);
+            board.clear();
+
+            initBoard(data.game);
+
+            board.setPosition(data.game.fen);
+            chess.load(data.game.fen);
+        });
+
+        socket.on('move', (data) => {
+            console.log(data);
+            board.setPosition(data.fen);
+            chess.load(data.fen);
+
+            highlightMove(data.source, data.target, board.getOrientation() === 'w' ? 'b' : 'w');
+
+
+            console.log(chess.in_check());
+            if(chess.in_check()) {
+                highlightCheck();
+            } else {
+                clearCheck();
+            }
+        });
+
+        /* 
+        
+            ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            ///////////////////////////////////////////
+        */
+        board = new Chessboard('boardContainer');
+
+
+        resetGame();
+
+        function resetGame() {
+            board.setPosition(ChessUtils.FEN.startId);
+            chess.reset();
+
+            updateGameInfo('Next player is white.');
+        }
+
+        function updateGameInfo(status) {
+            console.log(status)
+            // $('#info-status').html(status);
+            // $('#info-fen').html(chess.fen());
+            // $('#info-pgn').html(chess.pgn());
+        }
+
+        function pieceMove(move) {
+            console.log(move)
+
+            var nextPlayer,
+                status,
+                chessMove = chess.move({
+                    from: move.from,
+                    to: move.to,
+                    promotion: 'q'
+                });
+
+
+            nextPlayer = 'white';
+            if (chess.turn() === 'b') {
+                nextPlayer = 'black';
+            }
+
+            if (chessMove !== null) {
+                if (chess.in_checkmate() === true) {
+                    status = 'CHECKMATE! Player ' + nextPlayer + ' lost.';
+                } else if (chess.in_draw() === true) {
+                    status = 'DRAW!';
+                } else {
+                    status = 'Next player is ' + nextPlayer + '.';
+
+                    if (chess.in_check() === true) {
+                        status = 'CHECK! ' + status;
+                    }
+                }
+
+                updateGameInfo(status);
+
+                if(chess.in_check()) {
+                    highlightCheck();
+                } else {
+                    clearCheck();
+                }
+
+            }
+
+            socket.emit('move', {
+                source: move.from,
+                target: move.to
+            })
+
+            return chess.fen();
+        }
+
+        function pieceSelected(notationSquare) {
+            console.log(notationSquare)
+            if (board.getOrientation() !== chess.turn()) return false;
+
+            
+            var i,
+                movesNotation,
+                movesPosition = [];
+
+            movesNotation = chess.moves({ square: notationSquare, verbose: true });
+            for (i = 0; i < movesNotation.length; i++) {
+                movesPosition.push(ChessUtils.convertNotationSquareToIndex(movesNotation[i].to));
+            }
+
+            return movesPosition;
+        }
+
+
+        // $(document).ready(() => {
+        //     $(window).resize(() => board.resize());
+        // });
+    })
+</script>
+
+<div class="flex_center">
+<div id="boardContainer" style="width: 100%; max-width: 550px; margin: 0 auto; display: block !important;"></div>
+</div>

@@ -1,0 +1,73 @@
+<% layout('../layout/page.ejs')%>
+<% block('title', "Профиль") %>
+<%-partial('../partials/alert')%>
+
+<div class="card mb-3">
+    <div class="card-header">Пополнение BTC</div>
+    <div class="card-body">
+        <p >Для того чтобы пополнить счет BTC отправьте желаемую сумму на адрес:</p>
+        <input class="form-control" type="text" readonly value="<%=user.cashAddrs.btc%>">
+        <small>Средства будут зачислены после 2х подтверждений. После первого успешного пополнения адрес будет изменен!</small>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Пополнить RUB <b class="text-danger">[QIWI-эквайринг]</b>:</div>
+    <div class="card-body">
+        <p>При помощи эквайринга QIWI вы можете пополнить счет используя банковскую карту или счет QIWI:</p>
+        <p>Не в коем случае не меняйте указанное примечание в переводе!</p>
+        <a href="/profile/cashin/qiwi-url" class="btn btn-success">Перейти к оплате</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Пополнить RUB <b class="text-danger">[QIWI]</b> реквизиты для ручного перевода:</div>
+    <div class="card-body">
+        <lable>Для того чтобы пополнить счет RUB отправьте желаемую сумму на QIWI-номер:</label>
+        <input class="form-control mb-2" type="text" readonly value="<%=qiwi%>">
+        <label>Со следующим примечанием:</label>
+        <input class="form-control" type="text" readonly value="<%=user.nid%>">
+        <small><b class="text-danger">ВАЖНО: </b> Убедитесь что примечание введено корректно!</small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Пополнить VIRT:</div>
+    <form action="/profile/cashin" method="post" class="card-body">
+        <p class="text-primal">Раз в день вы имеете возможность получения 250 бесплатных фишек</p>
+        <%if(gotVirtToday) { %>
+            <div class="alert alert-danger">
+                Вы уже получили бесплатные фишки сегодня!
+            </div>
+        <%}%>
+        <input hidden type="text" name="conc" value="virt">
+        <button <%=gotVirtToday ? 'disabled': ''%> type="submit" class="btn btn-success">Получить бесплатные фишки</button>
+    </form>
+</div>
+<hr>
+
+<div>
+    <h4>Последние 10 пополнений:</h4>
+    <table id="cashInHistory" class="table table-hover table-bordered" style="width:100%">
+        <thead>
+            <th>Дата</th>
+            <th>Адрес зачисления</th>
+            <th>Валюта</th>
+            <th>Сумма</th>
+        </thead>
+        <tbody>
+        <%if (payments.lenght == 0) {%>
+            <tr>У вас еще нет поступлений...</tr>
+        <%} else {%>
+            <% for(let p of payments) { %>
+                <tr>
+                    <th><%= p.date.toLocaleString()%></th>
+                    <th><%= p.address%></th>
+                    <th><%= p.conc%></th>
+                    <th><%= p.amount%></th>
+                </tr>
+            <%}%>
+        <%}%>
+        </tbody>
+    </table>
+</div>

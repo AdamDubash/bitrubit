@@ -1,0 +1,117 @@
+<% layout('./layout/page')%>
+<% block('title', game.title + " | SuperGames.com") %>
+
+<script>
+    var socket;
+
+    $(document).ready(() => {
+        //config.hostname
+        socket = io.connect('http://<%=hostname%>:<%=port%>/<%= game.name %>');
+
+        socket.on('connect', function() {
+            socket.emit('room', '<%-room.id%>');
+        });
+
+        socket.on('finish', data => {
+            $('#alert-bank')[0].innerText = data.bank;
+            $('#alert-username')[0].innerText = data.winner;
+            (data.msg) && ($('#alert-msg')[0].innerText = data.msg);
+            $('#alert').modal('show');
+        });
+
+        const updateRoomHeader = (data) => {
+            $('#headerPlaying-username')[0].innerText = data.currentTurnUsername;
+            $('#headerPlaying-time')[0].innerText = getCurrentSeconds(data.time);
+
+            (intervalId) && (clearInterval(intervalId));
+
+            intervalId = setInterval(() => {
+                const now = getCurrentSeconds(data.time);
+
+                (now - 1 <= 0) && (clearInterval(intervalId));
+
+                $('#headerPlaying-time')[0].innerText = now;
+            }, 1000);
+        }
+
+        socket.on('play', data => {
+            $('.room_header').toggle();
+        });
+
+        //если был реконнект, то ренедерим все заного, здесь шапка
+        socket.on('render', data => {
+            // renderChat(data);
+
+            $('#headerWaiting').hide();
+            $('#headerPlaying').show();
+
+            updateRoomHeader(data)
+        });
+
+        socket.on("msg", data => {
+            console.log(data)
+        })
+
+        const getCurrentSeconds = (finishTime) => {
+            return ~~((finishTime - Date.now()) / 1000);
+        }
+
+        let intervalId;
+
+        socket.on('header', updateRoomHeader);
+
+    });
+
+
+</script>
+
+<%-partial('./partials/alertModal')%>
+
+<div class="room">
+    <div id="headerWaiting" class="room_header">
+        <div>
+            Ждем второго игрока
+        </div>
+
+    </div>
+
+    <div id="headerPlaying" class="room_header" style="display: none">
+        <div>
+            Ходит: <b id="headerPlaying-username"><%= room.owner%></b>
+        </div>
+        <div class="verticalSeparator"></div>
+        <div class="game-header-online">
+            Конец хода через: <b id="headerPlaying-time"><%= room.time%></b>
+        </div>
+    </div>
+
+    <div class="game-field pt-2">
+        <%- partial('./partials/games/' + game.name)%>
+    </div>
+
+    <hr>
+    <div class="flex_center">
+        <button class="btn btn-danger" onclick="lose()">Признать поражение</button>
+        <script>
+            function lose() {
+                socket.emit('lose');
+            }
+        </script>
+    </div>
+    
+</div>
+
+
+<div class="modal fade" id="alert" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Игра завершена!</h5>
+            </div>
+            <div class="modal-body">
+                <p>Игрок <b id="alert-username">username</b> одержал победу и выиграл: <b><span id="alert-bank">0</span>руб</b>!</p>
+                <p id="alert-msg"></p>
+            </div>
+        </div>
+    </div>
+</div>

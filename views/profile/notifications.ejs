@@ -1,0 +1,78 @@
+<% layout('../layout/page.ejs')%>
+<% block('title', "Уведомления") %>
+
+
+<div class="block mb-3">
+    <p>Непрочитанных сообщений: <span class="text-accent"><%=unreadNotifs%></span></p>
+    <button class="my-btn" onclick="readAll()">Отметить прочитанными</button>
+</div>
+
+<table class="my-table" id="notifsTable">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Сообщение</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+<script>
+    let table
+    $(document).ready(async () => {
+        table = $('#notifsTable').DataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            autoWidth: false,
+            rowCallback: function(row, data) {
+                console.log(row, data)
+                if(!data.read) {
+                    row.style.backgroundColor = '#466336'
+                    row.style.color = 'white'
+                }
+            },
+            "language": {
+                "sEmptyTable": "Нет записей"
+            },
+            "columns": [
+                { "data": "date" },
+                { "data": "text" }
+            ],
+            "order": [[0, "desc"]]
+        })
+
+        const notifs = await getNotifs(0)
+
+        table.rows.add(notifs)
+        table.draw()
+    })
+    
+
+    const getNotifs = async (page) => {
+        const res = await fetch('/profile/notifications/page?id='+page, {
+            credentials: 'include'
+        })
+
+        const parsed = await res.json()
+
+        parsed.forEach(el => {
+            console.log((new Date(el.date)).toLocaleString())
+            el.date = (new Date(el.date)).toLocaleString()
+        });
+
+        return parsed
+    }
+
+    const readAll = async () => {
+        const res = await fetch('/profile/notifications/readall', {
+            credentials: 'include'
+        })
+
+        if(res.status == 200) {
+            location.reload()
+        }
+    }
+</script>

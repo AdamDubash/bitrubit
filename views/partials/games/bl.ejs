@@ -1,0 +1,89 @@
+<link rel="stylesheet" type="" href="/bl/style.css">
+<script src="/bl/logic.js"></script>
+<script src="/bl/bl.js"></script>
+<script src="/javascripts/fit.min.js"></script>
+
+
+<script>
+    var board, game;
+
+    $(document).ready(() => {
+        const moveHandler = function() {
+            console.log(this.currentMoves);
+            socket.emit('move', this.currentMoves);
+        };
+
+        game  = new Logic(moveHandler, {});
+        board = new LongBackgammon('blContainer', game);
+
+        socket.on('start', data => {
+            board.start(data.dices, data.playerColor, data.currentColor, {});
+        });
+
+        socket.on('move', (data) => {
+            console.log('move', data);
+            for(let move of data) {
+                board.moveChecker(move.from, move.to);
+                board.game.move(move.from, move.to, true);
+            }
+        });
+
+        socket.on('turn', (data) => {
+            console.log('turn', data);
+            board.nextTurn(data.dices, data.currentColor);
+        });
+
+        socket.on('board-alert', (data) => {
+            console.log(data)
+        });
+
+        socket.on('render', (data) => {
+            $('#blContainer > div.board').remove();
+
+            game  = new Logic(moveHandler, data.game);
+            board = new LongBackgammon('blContainer', game, data.game);
+
+            board.start(data.game.dices, data.game.playerColor, data.game.currentColor, data.game);
+            // board.nextTurn(data.game.dices, data.game.currentColor);
+
+        });
+    })
+
+    function getScaleValue() {
+        const max = 800;
+        const fWidth = $('.game-field').width();
+
+        const scale = +(fWidth * 100 / 800 / 100).toFixed(5)
+
+        return scale;
+    }
+
+    function getTranslateValues() {
+        const fWidth = $('.game-field').width();
+        const cWidth = $('.board').width();
+
+        const fHeight = $('.game-field').height();
+        const cHeight = $('.board').height();
+
+        return {
+            x: fWidth - cWidth,
+            y: fHeight - cHeight
+        }
+    }
+
+    $(window).resize(() => {
+        // console.log(getScaleValue())
+        // console.log(getTranslateValues())
+        // $('.container').attr('style', `transform: scale(${getScaleValue()})`)
+
+    })
+
+    $(document).ready(() => {
+        fit($('.board')[0], $('#blContainer')[0], {watch: true, vAlign: fit.TOP, hAlign: fit.CENTER});
+    });
+
+</script>
+
+<div class="container" id="blContainer">
+
+</div>

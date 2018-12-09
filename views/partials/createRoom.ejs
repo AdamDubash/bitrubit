@@ -1,0 +1,74 @@
+<div class="modal fade" id="createRoomModal" tabindex="-1" role="dialog" aria-labelledby="createRoomModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createRoomModalLongTitle">Создать комнату</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form name="createRoomForm" method="post" onsubmit="createRoom(); return false;">
+            <div class="form-group">
+                <label >Ставка</label>
+                <div class="createRoom-select-wrapper">
+                    <input type="text" value="100" name="bet"  class="form-control" id="roomBetInput" required>
+                    <select class="form-control" name="conc">
+                        <%for(let bet in betsConfig) { %>
+                            <option value="<%=bet%>"><%=bet.toUpperCase()%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <small>
+                    <%for(let bet in betsConfig) { %>
+                        <b><%=bet.toUpperCase()%>:</b>Минимум - <%=betsConfig[bet].min%>. Максимум - <%=betsConfig[bet].max%> <br>
+                    <%}%>
+                </small>
+            </div>
+
+            <script>
+                function createRoom() {
+
+                    sendAjaxForm('/games/<%=game.name%>/create', "createRoomForm", async (err, res) => {
+                        if (err) {
+                            alert(err);
+                            console.log(err);
+                            return
+                        }
+                        const link = await res.text();
+
+                        window.location.href = link;
+                    })
+                }
+            </script>
+
+            <div class="form-group">
+                <label >Время одного хода в секундах</label>
+                <input type="number" name="time" min="30" max="300" class="form-control" value="90" required>
+                <small>Минимум - 30. Максимум - 300.</small>
+            </div>
+
+            <div class="form-group">
+                <label >Описание</label><br>
+                <textarea name="descr" cols="30" rows="5" maxlength="50"></textarea><br>
+                <small>Макс. длина 50символов</small>
+            </div>
+
+            <!--<div class="form-check">-->
+                <!--<input type="checkbox" name="link" class="form-check-input" >-->
+                <!--<label class="form-check-label">Вход только по ссылке</label>-->
+            <!--</div>-->
+
+            <div class="modal-footer mt-2">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="sumbmit" class="btn btn-primary">Создать</button>
+            </div>
+        </form>
+
+            
+      </div>
+      
+    </div>
+  </div>
+</div>

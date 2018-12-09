@@ -1,0 +1,44 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0; 
+}
+
+body {
+  background: $clrBack;
+  font-family: Ubuntu, sans-serif;
+  color: $clrPrimaryText;
+
+}
+
+a {
+  color: $clrLink;
+  text-decoration: none;
+
+  &:hover {
+    color: $clrLinkHover;
+    text-decoration: underline;
+  }
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  border-top-color: $clrPrimaryText;
+}
+
+#app {
+  height: 100%;
+}
+
+.card {
+  background-color: $clrDarkerContainer;
+
+  &-header {
+    border-bottom-color: $clrAccent;
+  }
+}

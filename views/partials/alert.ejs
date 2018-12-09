@@ -1,0 +1,17 @@
+<%if(msg && msg.error) {%>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <p><%=msg.error%></p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<%}%>
+<%if(msg && msg.success) {%>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <p><%=msg.success%></p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<%}%>
+

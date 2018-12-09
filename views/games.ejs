@@ -1,0 +1,165 @@
+<% layout('./layout/page')%>
+<% block('title', "Игры") %>
+<% block('vue', true) %>
+
+<div id="gamesPage">
+    <!-- <h2 class="text-center">Игры</h2> -->
+
+    <div class="infoblock">
+        <p>Общий онлайн: <span class="text-success">{{playersTotal}}</span></p>
+        <p>Игроков в игре: <span class="text-accent">{{playersInGame}}</span></p>
+        <p>Ожидающих оппонента: <span class="text-danger">{{playersPending}}</span></p>
+    </div>
+
+
+    <h5 class="text-center">Зал: Heads-Up</h5>
+    <div class="infoblock">
+
+        <pair-game v-for="pg in pairGames" :data="pg"></pair-game>
+    </div>
+
+    <h5 class="text-center mt-3">Зал: Multiplayer</h5>
+    <div class="infoblock">
+        <mp-game v-for="mp in mpGames" :data="mp"></mp-game>
+    </div>
+
+    
+
+</div>
+
+<script>
+    Vue.component("pair-game", {
+        props: ['data'],
+        template: `<div class="infoblock-game">
+            <div class="infoblock-game-header"><a :href="data.link">{{data.title}}</a></div>
+            <div class="infoblock-game-body">
+                <p>Онлайн: <span class="text-success">{{data.online}}</span></p>
+                <p>Комнат: <span class="text-warning">{{data.rooms}}</span></p>
+                <p>Игроков в игре: <span class="text-accent">{{data.inGame}}</span></p>
+                <p>Ожидающих: <span class="text-danger">{{data.inPending}}</span></p>
+            </div>
+        </div>`
+    }) 
+
+    Vue.component("mp-game", {
+        props: ['data'],
+        template: `<div class="infoblock-game">
+            <div class="infoblock-game-header"><a :href="data.link"> <span class="infoblock-game-header-conc">{{data.conc}}</span> {{data.title}}</a></div>
+            <div class="infoblock-game-body">
+                <p>Онлайн: <span class="text-success">{{data.online}}</span></p>
+                <p>Участников: <span class="text-warning">{{data.players}}</span></p>
+                <p>Банк: <span class="text-accent">{{data.bank}}</span></p>
+            </div>
+        </div>`
+    }) 
+
+    const app = new Vue({
+        el: "#gamesPage", 
+        data: {
+            "pairGames": {
+                
+            },
+            "mpGames": {
+               
+            }
+        },
+        computed: {
+            playersTotal() {
+                let sum = 0
+
+                for(let game in this.pairGames) {
+                    sum += this.pairGames[game].online
+                }
+
+                for (let game in this.mpGames) {
+                    sum += this.mpGames[game].online
+                }
+                
+                return sum
+            },
+            playersPending() {
+                let sum = 0
+
+                for (let game in this.pairGames) {
+                    sum += this.pairGames[game].inPending
+                }
+
+                return sum
+            },
+            playersInGame() {
+                let sum = 0
+
+                for (let game in this.pairGames) {
+                    sum += this.pairGames[game].inGame
+                }
+
+                for (let game in this.mpGames) {
+                    sum += this.mpGames[game].players
+                }
+
+                return sum
+            }
+        }
+    })
+</script>
+
+<script>
+    (
+        () => {
+
+            async function updateInfo(isInit) {
+                try {
+                    const res = await fetch('/games/info')
+                    const data = await res.json()
+                    console.log(data)
+
+                    if(isInit) {
+                        setLinks(data)
+                        app["pairGames"] = data["1x1"]
+                        app["mpGames"] = data["mp"]
+                        return
+                    }
+
+
+                    for(let pairGame in data["1x1"]) {
+                        const appGame = app["pairGames"][pairGame]
+                        if(appGame) {
+                            app["pairGames"][pairGame] = data["1x1"][pairGame]
+                            app["pairGames"][pairGame].link = appGame.link
+                        }
+                    }
+
+                    for (let mpGame in data["mp"]) {
+                        const appGame = app["mpGames"][mpGame]
+                        if (appGame) {
+                            app["mpGames"][mpGame] = data["mp"][mpGame]
+                            app["mpGames"][mpGame].link = appGame.link
+                        }
+                    }
+
+                } catch (e) {
+                    console.error(e)
+                }   
+            }
+
+            setInterval(() => {
+                // clear()
+                updateInfo()
+            }, 10000)
+
+
+            $(document).ready(() => {updateInfo(true)})
+
+            const setLinks = data => {
+                for(let gt in data) {
+                    let link = gt === '1x1' ?"/games/" : "/games/mp/"
+
+                    for(let game in data[gt]) {
+                        data[gt][game].link = link + game
+                    }
+                }
+            }
+        }
+    )()
+
+</script>

@@ -1,0 +1,150 @@
+
+.nav{
+    // z-index: 110;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: $szHeaderHeight;
+    width: $szNavWidth;
+    height: 100%;
+    background-color:none;
+    transition: width 0.5s ease-in-out;
+
+    //anti bs
+    display: block;
+    line-height: 1;
+
+    @include adaptive(500px) {
+        padding-top: 55px;
+    }
+}
+
+.nav .btn_hide_vpanel {
+    display: none;
+}
+
+.nav.vpanel-hidden {
+    width: 50px;
+
+    & .nav_btn_hide_caption {
+        display: none;
+    }
+
+    & + .workspace-container {
+        padding-left: 50px;
+    }
+}
+
+.nav_list {
+    overflow: hidden;
+    
+}
+
+a.nav_list_item {
+    color: inherit;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.nav_list_item{
+    height: 50px;
+    border-bottom: 1px solid $clrLighterContainer;
+    display: flex;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &:hover .nav_list_item_header{
+        text-shadow: 0 0 2px $clrAccent;
+    }
+
+    &_logo {
+        width: 50px;
+        height: 50px;
+        padding: 10px;
+        box-sizing: inherit; 
+    }
+
+    &_body {
+        background: black;
+        height: 100%;
+        width: calc(100% - 50px);
+        box-sizing: border-box;
+        padding: 12px;
+        border-radius: 15px;
+    }
+
+
+    &_header {
+        font-size: 22px;
+    }
+
+    &.router-link-exact-active  {
+        border-right: 2px solid $clrAccent;
+    }
+}
+
+
+
+//sublists
+
+
+.nav_list_item_sublist {
+    transition: height 0.4s ease-in;
+    position: relative;
+
+    &::after {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        position: absolute;
+        border: 7px solid;
+        border-color: transparent transparent transparent #aaa;
+        right: 15px;
+        top: 17px;
+    }
+    
+    & ul {
+        font-size: 16px;
+        padding-left: 15px;
+        display: none;
+        
+    }
+
+    a {
+        color: inherit;
+    }
+
+    li:hover {
+        background-color: #17827d;
+        border-radius: 5px;
+        
+    } 
+
+    &-shown {
+        height: auto;
+
+        &::after {
+            transform: rotate(90deg);
+            right: 22px;
+            top: 22px
+        }
+
+        & ul {
+            display: block;
+        }
+        
+    }
+}
+
+.nav.vpanel-hidden {
+    & .nav_list_item_sublist ul {
+        display: none;
+    }
+
+    & .nav_list_item_sublist::after {
+        display: none;
+    }
+}

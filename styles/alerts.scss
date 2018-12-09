@@ -1,0 +1,10 @@
+.alerts {
+  position: absolute;
+  right: 20px;
+  top: 70px;
+  z-index: 1500;
+}
+
+.alerts > .alert {
+  min-width: 100px;
+}

@@ -1,0 +1,116 @@
+<% layout('./layout')%>
+
+<%-partial('./partials/sendNotifyModal')%>
+
+<div class="card mt-3">
+    <div class="card-header">Поиск пользователей</div>
+    <div class="card-body">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="username" id="findingId">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" onclick="getUsersByUsername()">Поиск по Username</button>
+            </div>
+        </div>
+        <hr>
+        <button class="btn btn-primary" onclick="getAllUsers()">Вывод всех пользователей</button>
+    </div>
+</div>
+
+<table class="my-table mt-3 mb-3" id="usersTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>username</th>
+            <th>BTC</th>
+            <th>RUB</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<script>
+    const showMessageEditor = (id) => {
+        $('#messageDestination')[0].value = id
+
+        $('#messageEditorModal').modal('show')
+    }
+
+    let table
+    const getAllUsers = async () => {
+        const res = await fetch("/api/users")
+        const exs = await res.json()
+
+        console.log(exs)
+
+        fillTable(exs)
+    }
+
+    const getUsersByUsername = async () => {
+        const res = await fetch("/api/users?username=" + findingId.value)
+        const exs = await res.json()
+
+        console.log(exs)
+
+        fillTable(exs)
+    }
+
+    const fillTable = exs => {
+        table.clear()
+
+        exs.forEach(e => {
+            e.actions = `<a href="/admin/users/${e.id}">Edit</a>`
+            e.actions += ` | <a href="#" onclick="showMessageEditor(${e.id})">Send</a>`
+        })
+
+        table.rows.add(exs)
+        table.draw()
+    }
+
+    $(document).ready(async () => {
+        table = $('#usersTable').DataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            autoWidth: false,
+            "language": {
+                "sEmptyTable": "Нет записей"
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "username" },
+                { "data": "cash.btc" },
+                { "data": "cash.rub" },
+                { "data": "actions" }
+            ]
+        });
+
+
+    })
+</script>
+
+<div style="display: none">
+    <h3>Создание пользователя</h3>
+    <form action="/api/users/create" method="post">
+        <div class="form-group">
+            <label>Email</label>
+            <input name="email" type="text" class="form-control" >
+        </div>
+
+
+        <div class="form-group">
+            <label>Username</label>
+            <input  name="username" type="text" class="form-control" >
+        </div>
+
+
+        <div class="form-group">
+            <label>Password</label>
+            <input name="password" type="text" class="form-control" >
+        </div>
+
+        <button type="submit" class="btn btn-success">Создать</button>
+    </form>
+</div>

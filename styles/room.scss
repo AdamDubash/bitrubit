@@ -1,0 +1,23 @@
+.room {
+    margin-top: 10px;
+}
+
+.room_header {
+    height: 30px;
+    background-color: $clrDarkerContainer;
+
+    border-left: 4px solid $clrAccent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $clrPrimaryText;
+}
+
+#headerWaiting {
+    justify-content: center;
+}
+
+#headerPlaying {
+    padding: 0 10px;
+    justify-content: space-around;
+}

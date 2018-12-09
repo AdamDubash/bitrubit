@@ -1,0 +1,41 @@
+<%layout('./layout')%>
+
+<h3>Обмен #<%=id%></h3>
+
+<div class="block">
+    <p>Курс: <span class="text-accent"><%=course%></span></p>
+    <p>Статус.Код <span class="text-accent"><%=status.code%></span></p>
+    <p>Статус.Описание <span class="text-accent"><%=status.msg%></span></p>
+    <p>Сумма.Киви <span class="text-accent"><%=amount.qiwi%></span></p>
+    <p>Сумма.Биток <span class="text-accent"><%=amount.btc%></span></p>
+    <p>Дата создания: <span class="text-accent"><%=createdTime%></span></p>
+    <p>Адрес.Источник: <span class="text-accent"><%=sourceAddress%></span></p>
+    <p>Адрес.Получение: <span class="text-accent"><%=destAddress%></span></p>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Сменить статус</div>
+    <div class="card-body">
+        <button class="btn btn-success" onclick="changeStatus(100, 'Обмен завершен успешно! ')">Успешно завершен</button>
+        <button class="btn btn-danger" onclick="changeStatus(-2, 'Деактивирован оператором')">Деактивирован</button>
+    </div>
+</div>
+<script>
+    const changeStatus = async (code, msg) => {
+        
+        try {
+            const res = await fetch("/admin/exchange/id/<%=id%>/status", {
+                method: 'POST',
+                body: JSON.stringify({ code, msg }),
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            alert("ok")
+        } catch(e) {
+            alert("error")
+        }
+    }
+</script>

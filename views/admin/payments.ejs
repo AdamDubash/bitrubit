@@ -1,0 +1,45 @@
+<%layout('./layout')%>
+
+<h3>Вводы/выводы</h3>
+
+<table id="paymentsTable" class="table table-hover table-bordered" style="width:100%">
+    <thead>
+    <tr>
+        <th>userId</th>
+        <th>Операция</th>
+        <th>Валюта</th>
+        <th>Сумма</th>
+        <th>Адрес</th>
+        <th>Статус</th>
+        <th>Дата</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+</table>
+
+<script>
+    $(document).ready(async () => {
+        const table = $('#paymentsTable').DataTable({
+            "language": {
+                "sEmptyTable": "Нет записей"
+            },
+            "ajax": "/api/payments",
+            "columns": [
+                { "data": "userNid" },
+                { "data": "operation" },
+                { "data": "conc" },
+                { "data": "amount" },
+                { "data": "address" },
+                { "data": "status" },
+                { "data": "date" }
+            ],
+            rowId: 'id',
+            "order": [[ 6, "asc" ]]
+
+        });
+
+    } );
+</script>

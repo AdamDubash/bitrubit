@@ -1,0 +1,36 @@
+<% layout('../layout/page.ejs')%>
+<% block('title', "Профиль") %>
+<%-partial('../partials/alert')%>
+
+<h4>Сменить пароль:</h4>
+<form action="/profile/updatepass" method="post" onsubmit="return passwordsAreEqual(this)">
+    <div class="form-group">
+        <label>Текущий пароль:</label>
+        <input type="password" name="current" class="form-control"required>
+    </div>
+    <div class="form-group">
+        <label>Новый пароль:</label>
+        <input type="password" name="newPass" class="form-control"required>
+    </div>
+    <div class="form-group">
+        <label>Повторите новый пароль:</label>
+        <input type="password" name="repeatPass" class="form-control" required>
+    </div>
+    <button class="btn btn-info" type="submit">Cменить пароль</button>
+</form>
+
+<script>
+    function passwordsAreEqual(e) {
+        const newPass = e.new.value;
+        const repeat = e.repeat.value;
+
+        if(newPass === repeat) {
+            e.new.setCustomValidity();
+            return true
+        } else {
+            e.new.setCustomValidity("Пароли не совпадают")
+            return false
+        }
+    }
+</script>
+<hr>

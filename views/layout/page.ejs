@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= blocks.title %></title>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+
+    <link rel="stylesheet" href="/stylesheets/main.css">
+
+
+    <!-- <link rel="stylesheet" type="" href="/stylesheets/datatable.css"> -->
+    <script src="/javascripts/ajaxUtils.js"></script>
+    <script src="/javascripts/jquery.serializeObject.min.js"></script>
+    <script src="/javascripts/datatable.js"></script>
+    <script src="/javascripts/datatable.bootstrap4.js"></script>
+    <script src="/javascripts/datatable.select.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    
+
+    <script>
+        $(document).ready(() => {
+            const leftSlideout = new Slideout({
+                'panel': document.getElementById('panel'),
+                'menu': document.getElementById('menu'),
+                'padding': 256,
+                'tolerance': 70,
+                'easing': 'cubic-bezier(.32,2,.55,.27)'
+            });
+
+            // Toggle button
+            document.querySelector('#btnToggleMenu').addEventListener('click', function () {
+                leftSlideout.toggle();
+            });
+        })
+    </script>
+</head>
+<body>
+
+    <%-partial('../partials/header')%>
+    <%-partial('../partials/nav')%>
+    
+    <div class="workspace-container" id="panel">
+        <div class="workspace">
+            <%-body %>
+        </div>
+        <%-partial('../partials/vue-chat') %>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,42 @@
+<% layout('./layout') %>
+
+<h3>Минимальная и Максимальная ставки в комнатах</h3>
+<hr>
+<div style="display: flex">
+    <% for(let conc in betsConf) { %>
+        <div class="card mb-3 mr-3">
+            <div class="card-header"><%= conc.toUpperCase() %></div>
+            <form name="<%= conc %>Form" class="card-body" onsubmit="saveBetConf('<%= conc %>Form');return false">
+                <input type="text" name="conc" value="<%= conc %>" hidden>
+                <div class="form-group">
+                    <label>Минимальная ставка</label>
+                    <input name="min" type="text" class="form-control" value="<%= betsConf[conc].min %>">
+                </div>
+                <div class="form-group">
+                    <label>Максимальная ставка:</label>
+                    <input name="max" type="text" class="form-control" value="<%= betsConf[conc].max %>">
+                </div>
+                <input type="text" value="<%=conc%>" name="conc" hidden>
+                <button class="btn btn-success" type="submit">Сохранить</button>
+            </form>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    function saveBetConf(formname) {
+
+        sendAjaxForm('/api/conf/gamesbet', formname, async (err, res) => {
+            if (err) {
+                alert("Ошибка на стороне сервера!")
+                console.log(err);
+                return
+            }
+            const data = await res.json();
+
+            alert(data.msg)
+        })
+    }
+</script>
+
+<hr>

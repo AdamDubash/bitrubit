@@ -1,0 +1,137 @@
+<%layout('./layout')%>
+
+<h3>Обменник</h3>
+
+<form class="card" name="exchangeProcentForm" onsubmit="saveProcent(); return false">
+    <div class="card-header">Наш процент к курсу</div>
+    <div class="card-body">
+        <div class="form-group">
+            <input name="procent" type="number" class="form-control" value="<%=exchange.procent%>">
+        </div>
+        <button type="submit" class="btn btn-success btn-sm">Сохранить</button>
+    </div>
+</form>
+
+<form class="card mt-3" name="exchangeWaitingMinutesForm" onsubmit="saveMinutes(); return false">
+    <div class="card-header">Время ожидания платежа в минутах</div>
+    <div class="card-body">
+        <div class="form-group">
+            <input name="minutes" type="number" class="form-control" value="<%=exchange.waitingMinutes%>">
+        </div>
+        <button type="submit" class="btn btn-success btn-sm">Сохранить</button>
+    </div>
+</form>
+
+<div class="card mt-3">
+    <div class="card-header">Поиск транзакций</div>
+    <div class="card-body">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="ID" id="findingId" >
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" onclick="getExById()">Поиск по ID</button>
+            </div>
+        </div>
+        <hr>
+        <button class="btn btn-primary" onclick="getAllExs()">Вывод всех обменов</button>
+    </div>
+</div>  
+
+<table class="lobby_table mt-3 mb-3" id="exsTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>QiwiAmount</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+
+<script>
+    let table
+    const getAllExs = async () => {
+        const res = await fetch("/api/exchange")
+        const exs = await res.json()
+
+        console.log(exs)
+
+        fillTable(exs)
+    }
+
+    const getExById = async () => {
+        const res = await fetch("/api/exchange/" + findingId.value)
+        const exs = await res.json()
+
+        console.log(exs)
+
+        fillTable(exs)
+    }
+
+    const fillTable = exs => {
+        table.clear()
+
+        exs.forEach(e => {
+            e.edit = `<a href="/admin/exchange/id/${e.id}">Edit<a>`
+        })
+
+        table.rows.add(exs)
+        table.draw()
+    }
+
+    $(document).ready(async () => {
+        table = $('#exsTable').DataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            autoWidth: false,
+            "language": {
+                "sEmptyTable": "Нет записей"
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "course" },
+                { "data": "status.msg" },
+                { "data": "amount.qiwi" },
+                { "data": "edit" }
+            ]
+        });
+
+        
+    })
+</script>
+
+
+<script>
+    function saveProcent() {
+
+        sendAjaxForm('/exchange/procent', "exchangeProcentForm", async (err, res) => {
+            if (err) {
+                alert("Ошибка на стороне сервера!")
+                console.log(err);
+                return
+            }
+            const data = await res.json();
+
+            alert(data.msg)
+        })
+    }
+
+    function saveMinutes() {
+
+            sendAjaxForm('/exchange/waitingminutes', "exchangeWaitingMinutesForm", async (err, res) => {
+                if (err) {
+                    alert("Ошибка на стороне сервера!")
+                    console.log(err);
+                    return
+                }
+                const data = await res.json();
+
+                alert(data.msg)
+            })
+        }
+</script>

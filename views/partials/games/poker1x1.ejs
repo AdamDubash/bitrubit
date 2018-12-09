@@ -1,0 +1,148 @@
+<link rel="stylesheet" type="" href="/poker/stylesheets/style.css">
+
+<script>
+    <% if(room.owner === user.username) { %>
+        const INDEX = 0;
+    <%} else { %>
+        const INDEX = 1;
+    <%}%>
+
+    $(document).ready(() => {
+
+
+        socket.on('new-round', (data) => {
+            shuffle();
+
+            showPlayerCards('pl1', data.cards);
+
+            showPublicData(data.pdata);
+        });
+
+        socket.on('moves', (moves) => {
+           showMoves(moves);
+        });
+
+        socket.on('move', (data) => {
+            showPublicData(data)
+        });
+
+
+        socket.on('opponentName', opponentName => {
+            console.log('opponentName', opponentName);
+            $('#pl2username')[0].innerText = opponentName; 
+        });
+
+        socket.on('board-alert', msg => {
+            console.log('board-alert', msg);
+            showAlert(msg);
+            printChatMsg(msg);
+        });
+
+        socket.on('showdown', data => {
+           console.log('showdown', data);
+           showBoardCards(data.board);
+
+           showPlayerCards(`pl${INDEX + 1}`, data.cards[INDEX]);
+           showPlayerCards(`pl${~~!INDEX + 1}`, data.cards[~~!INDEX]);
+        });
+
+        socket.on('render', ({game:data}) => {
+            if(data.plCards) {
+                showPlayerCards(`pl1`, data.plCards);
+            }
+
+            if(data.moves) {
+                showMoves(data.moves);
+            }
+
+            showNames(data.names);
+
+            showPublicData(data);
+        });
+
+    });
+</script>
+
+<div class="game-container">
+    <div class="player-cards" id="pl2cards">
+        <div class="player-info">
+            <h3 class="center"><span id="pl2username">Opponent</span></h3>
+            <h5 class="chips-color">$<span id="pl2bank">300</span></h5>
+        </div>
+        <div class="cards">
+            <div class="card-container"><img id="pl2card1" src="/poker/images/b2fv.png" /></div>
+            <div class="card-container"><img id="pl2card2" src="/poker/images/b2fv.png" /></div>
+            
+        </div>
+    </div>
+    
+    <div class="bet"><img src="/poker/images/chips.png"> <span id="pl2bet">0</span></div>
+
+    <div class="board-wrapper">
+        <div class="board">
+            <div class="card-container"><img src="/poker/images/b2fv.png" alt="" id="card1"></div>
+            <div class="card-container"><img src="/poker/images/b2fv.png" alt="" id="card2"></div>
+            <div class="card-container"><img src="/poker/images/b2fv.png" alt="" id="card3"></div>
+            <div class="card-container"><img src="/poker/images/b2fv.png" alt="" id="card4"></div>
+            <div class="card-container"><img src="/poker/images/b2fv.png" alt="" id="card5"></div>
+        </div>
+        <div>
+            <h3 class="center pot">Банк: <span id="pot" class="chips-color">0</span></h3>
+        </div>
+    </div>
+    <div class="bet"><img src="/poker/images/chips.png" alt=""> <span id="pl1bet">0</span></div>
+
+    <div class="player-cards" id="pl1cards">
+
+        <!--<small>Банк: <span id="pl1bank"><%=room.bet%></span>. Текущая вставка: <span id="pl1bet">0</span></small><br>-->
+        <div class="player-info">
+            <h3 class="center"><span id="pl1username"><%=user.username%></span></h3>
+            <h5 class="chips-color">$<span id="pl1bank">300</span></h5>
+        </div>
+        <div class="cards">
+            <div class="card-container"><img id="pl1card1" src="/poker/images/b2fv.png" /></div>
+            <div class="card-container"><img id="pl1card2" src="/poker/images/b2fv.png" /></div>
+        </div>
+    </div>
+
+    <div class="board-alert" style="display: none;">
+        opponent повысил ставку до 80
+    </div>
+
+    <div class="actions-wrapper">
+        <div class="betRanger" style="display: none;">
+            <div>
+                <button onclick="betSizer.value = betSizer.min; syncInputValues()">min</button>
+                <button onclick="betSizer.value = ((betSizer.max - betSizer.min)/2 + +betSizer.min).toFixed(0); syncInputValues()">1/2</button>
+                <button onclick="betSizer.value = betSizer.max; syncInputValues();">All in</button>
+            </div>
+            <input type="range" min="10" max="300" id="betSizer" oninput="syncInputValues()" value="10">
+        </div>
+
+        <div class="actions">
+
+        </div>
+    </div>
+</div>
+
+<script src="/poker/scripts/script.js"></script>
+
+<script>
+    function syncInputValues() {
+        betButtonValue.innerText = betSizer.value;
+    }
+
+
+    let alertCloseTimeout;
+    function showAlert(msg) {
+        $('.board-alert')[0].innerText = msg;
+        $('.board-alert').show();
+
+        alertCloseTimeout && clearInterval(alertCloseTimeout);
+        alertCloseTimeout = setTimeout(() => {
+            $('.board-alert').hide();
+        }, 4000)
+    }
+
+
+</script>

@@ -1,0 +1,58 @@
+.auth {
+    max-width: 400px;
+    border-radius: 10px;
+    background: $clrDarkerContainer;
+    
+    margin: 30px auto;
+    padding: 10px;
+    
+    & .btn {
+        font-size: 16px;
+        padding: 5px 30px;
+        display: block;
+        margin: 10px auto;
+    }
+}
+
+.auth_header {
+    padding: 5px 0;
+    background-color: $clrDarkerContainer;
+    text-align: center;
+    font-size: 20px
+}
+
+.auth_footer {
+    padding: 5px 0;
+    background-color: $clrDarkerContainer;
+    text-align: center;
+    font-size: 12px
+}
+
+.form {
+    height: 100%;
+    padding: 10px;
+}
+
+.form tr > td:first-child {
+    text-align: right;
+}
+
+.form tr > td:last-child {
+    width: 100%;
+
+    & input {
+        width: 100%;
+    }
+}
+
+.auth_captcha {
+    height: 30px;
+    width: 80px;
+    border: 1px solid;
+    margin: 0 auto;
+
+    &_container {
+        height: 30px;
+        width: 100%;
+    }
+}

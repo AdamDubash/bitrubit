@@ -1,0 +1,11 @@
+body {
+    /*background: #fff;*/
+}
+
+.adminRow {
+    background: lightgreen;
+}
+
+.unconfirmedEmail {
+    background: #ffb1b1
+}

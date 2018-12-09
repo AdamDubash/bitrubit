@@ -1,0 +1,69 @@
+<div class="chat_show-btn" onclick="toggleChat()"></div>
+<div class="chat" id="chat">
+    <script>
+
+        const printChatMsg = (msg) => {
+            const el = `<li class="chat_message">
+            <div class="avatar chat_avatar" style="background-image: url(/avatars/${msg.user.nid}.png)"></div>
+            <div class="chat_message_data">
+                <div class="chat_message_title">${msg.user.username}: </div>
+                <p class="chat_message_text">${msg.msg}</p>
+            
+            </div>
+        </li>`;
+
+            $('#chatLog')[0].append($(el)[0]);
+            $('#chatLog').scrollTop($('#chatLog')[0].scrollHeight);
+        }
+
+        const renderChat = data => {
+            if (data.chat && data.chat.length > 0) {
+                $('#chatLog')[0].innerHTML = '';
+                data.chat.forEach(m => printChatMsg(m));
+            }
+        }
+
+        $(document).ready(() => {
+            socket.on('msg', printChatMsg);
+        });
+
+        const sendToChat = () => {
+            const el = $("#chat_text")[0];
+            const msg = el.value;
+            el.value = '';
+
+            socket.emit('chat', msg);
+
+            return false;
+        }
+
+        const toggleChat = () => {
+            const chatHidden = localStorage.chatHidden
+
+            localStorage.chatHidden = !(chatHidden === 'true')
+
+            $('body')[0].classList.toggle('chat-shown');
+        }
+
+        (() => {
+            if(localStorage.chatHidden === 'true') {
+                return;
+                
+            } 
+            
+            if(localStorage.chatHidden = 'false');
+
+            $('body')[0].classList.add('chat-shown');
+        })();
+    </script>
+
+    <div class="btn_hide_vpanel btn_hide_vpanel-left" onclick="toggleChat()">
+        <span class="nav_btn_hide_caption">скрыть</span>
+    </div>
+    <ul id="chatLog" class="chat_log"></ul>
+    <form class="chat_editor" onsubmit="sendToChat(); return false;">
+        <textarea id="chat_text" maxlength="50" required placeholder="Ваше сообщение"></textarea>
+        <button class="my-btn" type="submit">Отправить</button>
+    </form>
+   
+</div>

@@ -1,0 +1,47 @@
+<%layout('./layout/page')%>
+<% block('title', game.title + " | SuperGames.com") %>
+
+<script>
+    var socket = io.connect('http://<%=hostname%>:<%=port%>/<%= game.name %>');
+
+    socket.on('online', (data) => {
+        $('.lobby_header_title_online span')[0].innerText = data;
+    });
+
+    socket.on('updateHeaderCash', data => {
+    //    updateHeaderCash(data);
+    console.log(data)
+    });
+
+    socket.on('alert', data => {
+        showAlert(data.type, data.msg);
+    });
+
+    const showAlert = (type = 'info', msg = '?') => {
+        let el = `<div class="alert alert-${type}">${msg} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></div>`;
+        el = $(el)[0];
+
+        setTimeout(() => {
+            try {
+                el.remove();
+            } catch (e) {}
+        }, 4000);
+
+        $('.alerts')[0].append(el);
+    }
+
+</script>
+
+<div class="alerts"></div>
+
+<div class="lobby">
+    <div class="lobby_header">
+        <div class="lobby_header_title">
+            <span class="text-accent"><%= game.title %></span>
+            <span class="lobby_header_title_online">Онлайн: <span>0</span></span>
+            <span class="lobby_header_title_online">Валюта: <span class="text-accent"><%=game.conc.toUpperCase()%></span></span>
+        </div>
+    </div>
+</div>
+
+<%-partial('./partials/mp/jackpot')%>

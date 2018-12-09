@@ -1,0 +1,59 @@
+<%layout('./layout')%>
+
+<h3>История игр</h3>
+
+<table id="historyTable" class="table table-hover table-bordered" style="width:100%">
+    <thead>
+    <tr>
+        <th>Игра</th>
+        <th>id</th>
+        <th>Валюта</th>
+        <th>Ставка</th>
+        <th>Инициатор</th>
+        <th>Игроки</th>
+        <th>Победитель</th>
+        <th>Окончание</th>
+        <th>Описание</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+    <tfoot>
+        <th>Игра</th>
+        <th>id</th>
+        <th>Валюта</th>
+        <th>Ставка</th>
+        <th>Инициатор</th>
+        <th>Игроки</th>
+        <th>Победитель</th>
+        <th>Окончание</th>
+        <th>Описание</th>
+    </tfoot>
+</table>
+
+<script>
+    $(document).ready(async () => {
+        const table = $('#historyTable').DataTable({
+            "language": {
+                "sEmptyTable": "Нет записей"
+            },
+            "ajax": "/api/history",
+            "columns": [
+                { "data": "gameName" },
+                { "data": "id" },
+                { "data": "conc" },
+                { "data": "bet" },
+                { "data": "owner" },
+                { "data": "playersUsernames" },
+                { "data": "winner" },
+                { "data": "finishTime" },
+                { "data": "descr" }
+            ],
+            rowId: 'id',
+            "order": [[ 6, "asc" ]]
+
+        });
+
+    } );
+</script>

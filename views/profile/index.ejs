@@ -1,0 +1,103 @@
+<% layout('../layout/page.ejs')%>
+<% block('title', "Профиль") %>
+<%-partial('../partials/alert')%>
+
+<div class="profile-info">
+    <h3>Профиль пользователя: <i class="text-accent"><%= user.username %></i></h3>
+    <a href="/logout" class="m-3 btn btn-sm btn-danger">Выйти</a>
+
+    <div class="avatar profile-avatar" style="background-image: url('/avatars/<%=user.nid%>.png')"></div>
+    
+    <% if(user.strategies.local.email) { %>
+        <p>Почта: <b><%=user.strategies.local.email%></b></p>
+    <%}%>
+    <% if(user.strategies.telegram.id) { %>
+        <p>TelegramID: <b><%=user.strategies.telegram.id%></b></p>
+    <%}%>
+    <p>ID: <b><%=user.nid%></b></p>
+    <small>Дата регистрации: <b><%= new Date(user.registered).toLocaleString()%></b> </small>
+</div>
+<hr>
+<div>
+    <h4>Обновить фото профиля</h4>
+    <form action="/profile/updateAvatar" method="post" encType="multipart/form-data" class="custom-file">
+        <input id="avatarInput" type="file" name="avatar" accept="image/*" onchange="this.form.submit()" class="custom-file-inpu">
+        <label class="custom-file-label" for="avatarInput">Выбрать изображение...</label>
+    </form>
+</div>
+<hr>
+<div class="balances" >
+    <h4 style="display: inline-block;">Текущий баланс:</h4>
+    <span>BTC: <b class="text-accent"><%= user.cash.btc %></b></span>
+    <span>RUB: <b class="text-accent"><%= user.cash.rub %></b></span>
+    <span>VIRT: <b class="text-accent"><%= user.cash.virt %></b></span>
+</div>
+<hr>
+<div class="balances">
+    <h4 class="text-center">Статистика по играм:</h4>
+    <p class="blockquote flex_center">
+        <span class="text-primary">Всего сыграно игр: <%= user.stat.games%></span>
+        <span  class="ml-2 text-success">Побед: <%= user.stat.wins%></span>
+    </p>
+    <div class="progress" style="height:25px">
+        <% const winsProcent = ~~(user.stat.wins / user.stat.games * 100) %>
+        <% const loseProcent = user.stat.games ? 100 - winsProcent : 0 %>
+
+        <% if(user.stat.games > 0) {%>
+
+            <% if(winsProcent > 0) {%>
+                <div class="progress-bar bg-success" style="width:<%= winsProcent %>%">
+                    <%= winsProcent %>%
+                </div>
+            <%}%>
+
+            <% if(loseProcent > 0) {%>
+                <div class="progress-bar bg-danger" style="width:<%= loseProcent %>%">
+                    <%= loseProcent %>%
+                </div>
+            <%}%>
+        <%}%>
+    </div>
+</div>
+<hr>
+<div class="profile-info">
+    <h4>Общая сумма выигрышей:</h4>
+    <p class="blockquote">
+        <p class="text-primary">BTC: <%= user.stat.winBank.btc%></p>
+        <p class="text-primary">RUB: <%= user.stat.winBank.rub%></p>
+        <p class="text-primary">VIRT: <%= user.stat.winBank.virt%></p>
+    </p>
+</div>
+<hr>
+<div>
+    <h4>Последние игры</h4>
+    <%if (!latestGames || !latestGames.length ) { %>
+        <h5 class="text-warning">Результаты игр отсуствуют или не были найдены ;(</h5>
+    <%} else {%>
+        <table class="table table-striped">
+            <thead>
+                <th>Игра</th>
+                <th>id</th>
+                <th>Валюта</th>
+                <th>Ставка</th>
+                <th>Дата окончания</th>
+                <th>Игроки</th>
+                <th>Описание</th>
+            </thead>
+            <tbody>
+                <% for (let lg of latestGames) { %>
+                    <tr <%=lg.winner == user.username ? `style=background:lightgreen`: 'style=background:lightcoral'%>>
+                        <td><%=lg.gameName%></td>
+                        <td><%=lg.id%></td>
+                        <td><%=lg.conc.toUpperCase()%></td>
+                        <td><%=lg.bet%></td>
+                        <td><%=new Date(lg.finishTime).toISOString()%></td>
+                        <td><%=lg.playersUsernames%></td>
+                        <td><%=lg.descr%></td>
+                    </tr>
+                <%}%>
+            </tbody>
+        </table>
+    <%} %>
+</div>
+

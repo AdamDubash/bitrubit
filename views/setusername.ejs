@@ -1,0 +1,30 @@
+<% layout('./layout/page')%>
+<% block('title', "Имя пользователя") %>
+
+<div class="auth">
+    <h3 align="center">Введите имя пользователя</h3>
+        <form method="POST" class="login" name="setUsernameForm" onsubmit="setUsername(); return false;">
+        <div class="form-group">
+            <label>Имя пользователя:</label>
+            <input type="text" class="form-control" name="username" placeholder="username...">
+        </div>
+        <button type="submit" class="btn btn-primary">Назначить</button>
+    </form>
+
+</div>
+
+<script>
+    function setUsername() {
+        sendAjaxForm('/setusername', "setUsernameForm", async (err, res) => {
+            if (err) {
+                alert(err);
+                console.log(err, res)
+                return;
+            }
+
+            const data = await res.text();
+            console.log(data)
+            location.reload(true);
+        })
+    }
+</script>

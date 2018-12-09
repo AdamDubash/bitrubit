@@ -1,0 +1,7 @@
+<script>
+    function testGame(right) {
+        socket.emit('move', right);
+    }
+</script>
+<button onclick="testGame(true)">правильный ход сделать</button>
+<button onclick="testGame(false)">неправильный ход сделать</button>

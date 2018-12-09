@@ -1,0 +1,141 @@
+<script>
+    var socket = io.connect('http://<%=hostname%>:<%=port%>/<%= game.name %>');
+
+    socket.on('connect', function() {
+        socket.emit('room', 'main');
+    });
+
+    var roomsList;
+    var table;
+
+    socket.on('init', function (data) {
+        roomsList = data.rooms;
+
+        $(document).ready(() => {
+            $('.game-header-online span')[0].innerText = data.online;
+
+            // renderChat(data);
+            console.log(data)
+            
+            table = $('#roomsTable').DataTable();
+
+            table.clear();
+
+            const rooms = [];
+            for(let i in data.rooms) {
+                rooms.push(getRoomRow(data.rooms[i]));
+            }
+
+            table.rows.add(rooms).draw(false);
+
+            $('#roomsTable > tbody > tr').click(joiningDialogCb);
+
+        });
+    });
+
+    socket.on('room:add', function (room) {
+        roomsList[room.id] = room;
+
+        table.row.add(getRoomRow(room)).draw(false);
+
+        $('#' + room.id).click(joiningDialogCb);
+    });
+
+    socket.on('room:remove', function (roomId) {
+        delete roomsList[roomId];
+
+        table.row($('#' + roomId)).remove().draw(false);
+
+    });
+
+    socket.on('room:update', function (room) {
+        roomsList[room.id] = room;
+
+        table.row($('#' + room.id)).remove().draw(false);
+
+        table.row.add(getRoomRow(room)).draw(false);
+
+        $('#' + room.id).click(joiningDialogCb);
+    })
+
+    socket.on('online', function (data) {
+        $('.game-header-online span')[0].innerText = data;
+    });
+
+    function getRoomRow(room) {
+        const tr = document.createElement('tr');
+        tr.id = room.id;
+
+        const tds = [
+            room.status,
+            room.owner,
+            room.bet,
+            room.time,
+            room.descr
+        ].map(td => `<td>${td}</td>`);
+
+        tr.innerHTML = tds.join('');
+
+        return tr;
+    }
+
+    function joiningDialogCb(e)  {
+        const id = e.target.parentNode.id;
+
+        if(!id) return;
+
+        $('#joinRoomModal a.btn-success')[0].href = '/games/<%-game.name%>/room/' + id;
+        $('#joinRoomModal a.btn-secondary')[0].href = '/games/<%-game.name%>/room/' + id + '/watch';
+
+        const rowData = $(e.target.parentNode.children).map((i, e) => e.innerText);
+
+        $('#jrmOwner')[0].innerText = rowData[1];
+        $('#jrmBet')[0].innerText = rowData[2];
+        $('#jrmTime')[0].innerText = rowData[3];
+        $('#jrmDescr')[0].innerText = rowData[4];
+
+        $('#joinRoomModal').modal('show');
+    }
+
+</script>
+
+<%- partial('./joinRoom.ejs') %>
+<%- partial('./createRoom.ejs') %>
+
+
+<div class="rooms">
+    <div class="rooms-header">
+        <div class="rooms-header-title">
+            Список комнат
+        </div>
+        <div class="rooms-header-create">
+            <button class="btn btn-info" data-toggle="modal" data-target="#createRoomModal">+ Создать комнату</button>
+        </div>
+    </div>
+
+    <div class="rooms-table">
+         <table id="roomsTable" class="table table-hover table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                
+                <th>Статус</th>
+                <th>Игрок</th>
+                <th>Ставка</th>
+                <th>Время на ход(с)</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+        <tfoot>
+                <th>Статус</th>
+                <th>Игрок</th>
+                <th>Ставка</th>
+                <th>Время на ход(с)</th>
+                <th>Описание</th>
+        </tfoot>
+    </table>
+    </div>
+   
+</div>

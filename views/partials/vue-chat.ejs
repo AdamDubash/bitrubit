@@ -1,0 +1,111 @@
+<% block('vue', true) %>
+
+<div class="chat_show-btn" onclick="toggleChat()"></div>
+<div class="chat" id="chat">
+    
+
+    <div class="btn_hide_vpanel btn_hide_vpanel-left" onclick="toggleChat()">
+        <span class="nav_btn_hide_caption">скрыть</span>
+    </div>
+    <select class="form-control form-control-sm chat_room-selector" v-model="current">
+        <option v-for="(room, name) in rooms" :value="name">{{room.title}}</option>
+    </select>
+    <ul id="chatLog" class="chat_log">
+        <template v-if="current">
+            <chat-msg v-for="msg in rooms[current].log" :msg="msg"></chat-msg>
+        </template>
+        
+    </ul>
+    <form class="chat_editor" @submit.prevent="sendMsg">
+        <textarea id="chat_text" maxlength="100" required placeholder="Ваше сообщение" v-model="msgText"></textarea>
+        <button class="my-btn" type="submit">Отправить</button>
+    </form>
+
+</div>
+
+<script>
+    Vue.component("chat-msg", {
+            props: ['msg'],
+            template: `<li class="chat_message">
+            <div class="avatar chat_avatar" :style="'background-image: url(/avatars/'+msg.user.nid+'.png)'"></div>
+            <div class="chat_message_data">
+                <div class="chat_message_title">{{msg.user.username}}: </div>
+                <p class="chat_message_text">{{msg.text}}</p>
+            
+            </div>
+        </li>`
+    }) 
+
+    var chatSocket
+
+    const chatApp = new Vue({
+        el: '#chat',
+        data: {
+            current: null,
+            rooms: {
+                
+            },
+            msgText: null
+        },
+        methods: {
+            sendMsg() {
+                if(!this.msgText || this.msgText.length < 1) {
+                    return
+                }
+
+                chatSocket.emit('msg', {room: this.current, text: this.msgText})
+
+                this.msgText = ''
+            }
+        },
+        mounted() {
+            chatSocket = io.connect('http://<%=hostname%>:<%=port%>/chat');
+
+            chatSocket.on('init', data => {
+                for (let room in data) {
+                    this.rooms[room] = data[room]
+                }
+
+                this.current = 'common'
+            })
+
+            chatSocket.on('chat-error', (data) => alert(data))
+
+            chatSocket.on('msg', data => {
+                console.log(data)
+                this.rooms[data.room].log.push(data.msg)
+
+                if(this.rooms[data.room].log.length > 100) {
+                    this.rooms[data.room].log.shift()
+                }
+
+                this.$forceUpdate();
+            })
+        },
+    })
+
+    
+</script>
+
+<script>
+    const toggleChat = () => {
+        const chatHidden = localStorage.chatHidden
+
+        localStorage.chatHidden = !(chatHidden === 'true')
+
+        $('body')[0].classList.toggle('chat-shown');
+    }
+
+    (() => {
+        if (localStorage.chatHidden === 'true') {
+            return;
+
+        }
+
+        if (localStorage.chatHidden = 'false');
+
+        $('body')[0].classList.add('chat-shown');
+    })();
+
+    
+</script>

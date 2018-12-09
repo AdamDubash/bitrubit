@@ -1,0 +1,162 @@
+
+.avatar {
+  background-position: center;
+  background-size: cover;
+}
+
+.workspace {
+  // background-color: $clrWorkspaceBack;
+  background: space;
+  background-size:100%;
+  border-radius: 25px;
+  max-width: 800px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 10px;
+
+  &-container {
+    background: space url(http://radyo.diyarbakir.pol.tr/Content/images/background/bg07.jpg);
+    background-size:100%;
+    margin: 0 auto;
+    height: 100%;
+    padding-left: $szNavWidth;
+    padding-top: $szHeaderHeight;
+    // z-index: 130;
+    transition: padding 0.5s ease-out;
+    overflow-x: hidden;
+    
+    @include adaptive(500px) {
+      padding-top: $szHeaderHeightM;
+    }
+
+    @include adaptive(780px) {
+      & {
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+.modal-open .workspace-container.slideout-panel {
+  position: unset;
+  will-change: unset;
+}
+
+.text-accent {
+  color: $clrAccent;
+}
+
+.text-nonprimary {
+  color: $clrNonPrimary;
+}
+
+.conc {
+  font-weight: bold;
+}
+
+.flex_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn_hide_vpanel {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  height: 30px;
+  width: 100%;
+  cursor: pointer;
+  border-bottom: 2px solid $clrLighterContainer;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 12px;
+    background: url('/icons/hide-arrows.png');
+    background-position: center;
+    background-size: cover;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  &-left {
+    
+    &::before {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.vpanel-hidden {
+
+  & .btn_hide_vpanel::before {
+    transform: rotate(180deg);
+  }
+}
+
+
+.my-btn {
+  background: transparent;
+  border: 1px solid $clrAccent;
+  color: white;
+  font-weight: bold;
+  height: 100%;
+  cursor: pointer;
+
+  transition: box-shadow 0.3s ease-in;
+  &:hover {
+    box-shadow: 0 0 3px 1px #95dade;
+  }
+
+  &-large {
+    width: 100%;
+  }
+}
+
+
+.container-error {
+    text-align: center;
+    background: lightcoral;
+    background-color: #650e0e;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.btn-burger {
+    transform: rotate(90deg);
+    display: block;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.block {
+    padding: 20px 10px;
+    border-radius: 6px;
+    background: $clrDarkerContainer;
+    box-shadow: inset 0 0 1px 1px black;
+
+    p {
+      margin-bottom: 0;
+    }
+}
+
+.my-table {
+   width: 100%;
+    border-collapse: collapse;
+    border: 1px solid grey;
+    background: $clrDarkerContainer;
+    text-align: center;
+    
+    th {
+        border: 1px solid;
+    }
+
+    tbody { font-size: 12px; }
+
+    td {
+        border: 1px solid $clrBack;
+    }
+}

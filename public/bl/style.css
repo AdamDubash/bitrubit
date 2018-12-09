@@ -1,0 +1,163 @@
+.container {
+    width: 100%;
+    height: 600px;
+    /* margin: 15px auto; */
+    /* background: #1a3d48; */
+}
+
+.board {
+    width: 732px;
+    height: 521px;
+    background-image: url("./bg-table.png");
+    margin: auto;
+    position: relative;
+}
+
+.board-part {
+    /*background: #ccc;*/
+    /*opacity: .5;*/
+    width: 300px;
+    height: 490px;
+    display: inline-block;
+    margin: 15px;
+    position: relative;
+}
+
+.board-part_left {
+
+}
+
+.board-part_right {
+
+}
+
+.board-part_bar {
+    width: 44px;
+    margin: 14px;
+    position: relative;
+}
+
+.board-bar {
+    width: 100%;
+    height: 156px;
+    position: absolute;
+    /*background: aqua;*/
+    /*opacity: 0.3;*/
+}
+
+.bar_able {
+    box-shadow: 0 0 10px 5px lightblue;
+}
+
+.board-bar_top {
+    top: 0;
+}
+
+.board-bar_bottom {
+    bottom: 0;
+}
+
+.board-column {
+    height: 230px;
+    width: 50px;
+
+    /*background: bisque;*/
+    /*opacity: .7;*/
+    position: absolute;
+}
+
+.board-column_top {
+    top: 0;
+}
+
+.board-column_bottom {
+    bottom: 0;
+
+    transform: rotate(180deg)
+}
+
+.board-column_able > .checker:last-child {
+    opacity: .6;
+    box-shadow: 0 0 12px 6px lightblue;
+}
+
+.checker {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    border-radius: 100%;
+    background: #fefdfd;
+    margin: 0;
+    opacity: 1;
+    border: 0.2px solid #ccc;
+
+    /*box-shadow: inset rgba(255,255,255,0.2) 8px  8px 18px 5px,*/
+    /*inset rgba(0,0,0,0.5)      -8px -8px 18px 5px;*/
+}
+
+
+.checker:not(.checker_black)::after {
+    content: '';
+    display: block;
+    height: 36px;
+    width: 36px;
+    background: #ccc;
+    border-radius: 100%;
+    margin: 5px;
+    background-color: rgba(213, 127, 127, 0.1);
+    box-shadow: 0 0
+}
+
+.board-column_selected > .checker:last-child {
+    box-shadow: 0 0 10px 5px lightpink ;
+}
+
+.board-column_moveable > .checker:last-child {
+    box-shadow: 0 0 10px 5px lightgreen ;
+}
+
+.checker_black {
+    background: #774949;
+    border: 1px solid #ccc;
+}
+
+
+.board-column .checker:not(:first-child) {
+    margin: -35px 0;
+}
+
+.board-item {
+    width: 100%;
+    height: 9.5px;
+    background: papayawhip;
+    border-radius: 4px;
+    margin-bottom: 1px;
+}
+
+.board-item_black {
+    background: #774949;
+}
+
+.dices {
+    position: absolute;
+    top: 230px;
+    left: 90px;
+    color: black;
+}
+
+
+.dice {
+    width: 40px;
+    height: 40px;
+    background: ghostwhite;
+    border-radius: 4px;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 6px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.dice:last-child {
+    margin-left: 30px;
+}

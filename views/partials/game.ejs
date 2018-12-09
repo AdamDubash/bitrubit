@@ -1,0 +1,23 @@
+
+
+<div class="main">
+    <div class="game-header">
+        <div class="game-header-name">
+            <%= game.title %>
+        </div>
+        <div class="verticalSeparator"></div>
+        <div class="game-header-online">
+            Игроков онлайн: <span>0</span>
+        </div>
+        <div class="verticalSeparator"></div>
+        <div class="game-header-top">
+            <a href="#" class="link-disabled">Топ</a>
+        </div>
+        <div class="verticalSeparator"></div>
+        <div class="game-header-history">
+            <a href="#" class="link-disabled">История</a>
+        </div>
+    </div>
+    <%-partial('./rooms.ejs') %>
+    <%-partial('./chat.ejs') %>
+</div>

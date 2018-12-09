@@ -1,0 +1,43 @@
+
+<header class="header">
+    <div class="header_logo">
+        <span class="btn-burger" id="btnToggleMenu">|||</span>
+        <a href="/"><span class="text-accent">Sitename</span>.com</a>
+       
+    </div>
+    <div class="header_course flex_center">
+        <!-- <img src="/icons/graph.png" class="icon">
+        <p>
+            Курс к <span class="text-accent">OurCoin</span>:
+            <span class="header_course_conc"><span style="color: #9c1414">RUB:</span> 1000</span>
+            <span class="header_course_conc"><span style="color: #35b520">USD:</span> 30</span>
+            <span class="header_course_conc"><span style="color: lightseagreen">BTC:</span> 0.001</span>
+            <span class="header_course_conc"><span style="color: #0010ff">LTE:</span> 0.8</span>
+            <span class="header_course_conc"><span style="color: #8e6f12">BCC:</span> 0.04</span>
+        </p> -->
+    </div>
+    <div class="header_profile flex_center">
+        <% if (user) { %>
+            <a href="#" class="header_profile_balance flex_center">
+                <img src="/icons/wallet.png" class="icon">
+                <span>
+                    Баланс: RUB:<span class="text-accent">
+                        <%= user.cash.rub%></span> /
+                    BTC:<span class="text-accent">
+                        <%= user.cash.btc%></span> /
+                    VIRT: <span class="text-nonprimary">
+                        <%= user.cash.virt%></span>
+                </span>
+            </a>
+            <a href="/profile" class="header_profile_avatar"><img src="/avatars/<%=user.nid%>.png"></a>
+            <a href="/profile">Профиль</a>
+            <a href="/profile/notifications" class="header_profile_mail flex_center">
+                <span class="text-accent"><%=unreadNotifs%></span>
+            </a>
+        <%} else { %>
+            <a href="/login">Войти в систему </a>
+        <% } %>
+        
+    </div>
+
+</header>

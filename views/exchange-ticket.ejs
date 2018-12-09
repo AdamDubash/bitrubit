@@ -1,0 +1,65 @@
+<% layout('./layout/page.ejs')%>
+<% block('title', "Обмен валют") %>
+
+<script src="/javascripts/moment.js"></script>
+
+<h3 class="text-center">Обмен №<%=id%></h3>
+
+<div class="block mb-2">
+    <p>Выбранный курс: <span class="text-accent"><%=course%></span></p>
+    <% if(course == 'qiwi-btc') {%>
+        <p>Ожидаемая сумма зачисления: <span class="text-accent"><%=amount.qiwi%></span> RUB</p>
+        <p>Сумма получения: <span class="text-accent"><%=amount.btc%></span> BTC <small class="text-nonprimary">!Сетевая комиссия включена в сумму</small></p> 
+    <%} else {%>
+        <p>Ожидаемая сумма зачисления: <span class="text-accent"><%=amount.btc%></span> BTC</p>
+        <p>Сумма получения: <span class="text-accent"><%=amount.qiwi%></span> RUB</p>
+    <%}%>
+</div>
+
+<h4 class="mt-3 mb-3 text-center">Для обмена по выбранному курсу проделайте следующие шаги:</h4>
+
+<div class="block">
+    <% if (course == 'qiwi-btc') {%>
+        <p>Отправьте на QIWI-кошелек <span class="text-warning">+7987727222</span> вашу сумму(<%=amount.qiwi%>RUB), с вашего указанного номера (<%=sourceAddress%>)</p>
+        <small><span class="text-danger">Важно!</span> Средства перечисленные с другого номера не будут засчитаны!</small>
+    <%} else {%>
+        <p>Отправьте на BTC-адрес <span class="text-accent"><%=sourceAddress%></span> вашу сумму: <span class="text-info"><%=amount.btc%></span></p>
+    <%}%>
+</div>
+
+<div class="block mt-3">
+    <p>Статус: <span class="text-accent"><%=status.msg%></span></p>
+    <%if (status.code === 0) { %>
+        <p>Обмен деактивируется, если средства не поступят в течении: <span class="text-danger" id="timer">0мин 0сек</span></p>
+        <script>
+            const bTime = new Date('<%=waitingStopTime%>')
+
+            const updateTimer = () => {
+                const diff = bTime - Date.now()
+
+                if (diff < 0) {
+                    return
+                }
+
+                const duration = moment.duration(diff, 'ms')
+
+                $('#timer')[0].innerText = `${duration.minutes()}мин ${duration.seconds()}сек`
+            }
+
+            updateTimer()
+
+            setInterval(updateTimer, 1000)
+        </script>
+    <%}%>
+
+    <button onclick="location.reload()" class="btn btn-info btn-sm mt-2">Обновить страницу</button>
+</div>
+
+
+
+<%if (status.code === 0) { %>
+<div class="block mt-3">
+    Если вы передумали, вы можете деактивировать обмен прямо сейчас: <br>
+    <button class="btn btn-danger btn-sm mt-2">Деактивировать</button>
+</div>
+<%}%>

@@ -1,0 +1,98 @@
+<% layout('../layout/page.ejs')%>
+<% block('title', "Профиль") %>
+<%-partial('../partials/alert')%>
+
+<div class="card mb-3">
+    <div class="card-header">Вывести BTC:</div>
+    <div class="card-body">
+        <form name="btcOutForm" onsubmit="cashOut('btcOutForm');return false;">
+            <div class="form-group">
+                <label>Ваш биткоин адрес для вывода:</label>
+                <input type="text" name="address" class="form-control" placeholder="place for your address" required>
+            </div>
+            <div class="form-group">
+                <label>Сумма вывода</label>
+                <input type="text" name="amount" class="form-control" value="<%=btc.min%>" required>
+                <small><i>Выберите желаемую сумму, но <b>не менее
+                            <%=btc.min%>BTC</b> и <b>не более
+                            <%=btc.max%>BTC</b>.</i></small>
+            </div>
+            <input type="text" name="conc" value="btc" hidden>
+            <button class="btn btn-info">Вывести BTC</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Вывести RUB <b class="text-danger">[QIWI]</b>:</div>
+    <div class="card-body">
+        <form name="qiwiOutForm" onsubmit="cashOut('qiwiOutForm');return false;">
+            <div class="form-group">
+                <label>Ваш QIWI-номер для вывода:</label>
+                <input type="text" name="address" class="form-control" placeholder="+79871112233" required>
+            </div>
+            <div class="form-group">
+                <label>Сумма вывода</label>
+                <input type="text" name="amount" class="form-control" value="<%=rub.min%>" required>
+                <small><i>Выберите желаемую сумму, но <b>не менее
+                            <%=rub.min%>RUB</b> и <b>не более
+                            <%=rub.max%>RUB</b>.</i></small>
+            </div>
+            <input type="text" name="conc" value="rub" hidden>
+            <button class="btn btn-info">Вывести QIWI</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <h4>Последние 10 выводов:</h4>
+    <table id="cashOutHistory" class="table table-hover table-bordered" style="width:100%">
+        <thead>
+            <th>Дата</th>
+            <th>Адрес зачисления</th>
+            <th>Сумма</th>
+            <th>TXID</th>
+        </thead>
+        <tbody style="font-size: 10px">
+            <%if (payments.lenght == 0) {%>
+                <tr><th>Похоже, вы еще не производили вывода средств...</th></tr>
+            <%} else {%>
+            <% for(let p of payments) { %>
+            <tr>
+                <th>
+                    <%= p.date.toLocaleString()%>
+                </th>
+                <th>
+                    <%= p.address%>
+                </th>
+                <th>
+                    <%= p.amount%><%= p.conc.toUpperCase()%>
+                </th>
+                <th><%=p.txid%></th>
+            </tr>
+            <%}%>
+            <%}%>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function cashOut(formname) {
+        sendAjaxForm('/profile/cashout', formname, async (err, res) => {
+            if (err) {
+                alert(err);
+                console.log(err, res)
+                return;
+            }
+
+            const data = await res.text();
+            console.log(data)
+            alert(data)
+            location.reload(true);
+        })
+    }
+
+    /* function disableFormInputs(disabled) {
+        $('fieldset')[0].disabled = disabled
+    } */
+</script>

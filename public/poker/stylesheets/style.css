@@ -1,0 +1,264 @@
+
+/* body/page constants */
+body { font-size:.8em; margin:0;  /*overflow-x: hidden;*/ font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+/*.content { overflow: hidden; }*/
+
+.greenline {
+    height: 2px;
+    margin-top: 1px;
+	background-color: white;
+}
+img{
+	display:inline;
+	/*padding: 10px 10px 10px 10px;	*/
+}
+.first-card{
+	padding-left: 138px;
+}
+.board{
+	border-style: solid; border-width: 1px;  border-color: white;
+	
+}
+
+.watermark img{
+	filter:alpha(opacity=90);
+	opacity:.90;
+}
+@font-face {
+	font-family: 'AvenirMedium';
+	src: url('../fonts/AvenirMedium.eot');
+	src: local('?'), url('../fonts/AvenirMedium.woff') format('woff'), url('../fonts/AvenirMedium.ttf') format('truetype'), url('../fonts/AvenirMedium.svg#webfont3jNwtMLc') format('svg');
+	font-weight: normal;
+	font-style: normal; }
+.
+.center{text-align: center;}
+.right{float:right;}
+
+.white-text{color:white;}
+
+.bg-color9,.bg-color9 a{background-color:#01471C} /* footer links part of footer */
+
+
+/*custom styles*/
+.game-container {
+	width: 100%;
+	/* height: 600px; */
+	border: 1px solid white;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	position: relative;
+    background: #00893587;
+    color: white;
+}
+
+.game-field {
+    background: #00893587;
+}
+
+.board {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card-container {
+	width: 71px;
+	margin: 3px;
+}
+
+@media (max-width: 500px) {
+	.card-container {
+		width: 60px;
+	}
+
+	.game-container .cards > div:last-child {
+		margin-left: -50px;
+    	margin-top: 15px;
+	}
+
+	.game-container .player-info {
+		left: 76px;
+	}
+}
+
+@media (max-width: 400px) {
+	.card-container {
+		width: 55px;
+		margin: 2px;
+	}
+
+	.game-container .cards > div:last-child {
+		margin-left: -45px;
+	}
+
+	.game-container .player-info {
+		left: 69px;
+		top: 15px
+	}
+	
+}
+
+
+.board img {
+	width: 100%;
+}
+
+.board-alert {
+	position: absolute;
+	text-align: center;
+	padding: 15px 20px;
+	font-size: 19px;
+	border-radius: 6px;
+	background-color: #00000087;
+}
+
+.actions-wrapper {
+	/* position: absolute; */
+	/* bottom: 38px; */
+	/* right: 50px; */
+}
+
+.actions {
+	/* display: flex; */
+	/* flex-direction: column; */
+}
+
+.actions button:not(:last-child) {
+	margin-right: 10px;
+}
+
+.actions > button {
+	font-size: 15px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: white;
+	background-color: #b93744;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 10px;
+}
+
+.actions > button:not(:last-child) {
+	margin-bottom: 5px;
+}
+
+.actions >button:hover {
+	cursor: pointer;
+	box-shadow: 0 0 11px 0px lightcyan;
+}
+
+.betRanger {
+	text-align: center;
+}
+
+.betRanger button{
+	font-size: 13px;
+	font-weight: bold;
+	color: white;
+	background-color: #b93744;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.board-wrapper {
+	display: flex;
+	flex-direction: column-reverse;
+	align-items: center;
+}
+
+.player-dealer {
+	position: relative;
+}
+
+.player-dealer::after {
+	content: 'D';
+    font-size: 19px;
+    text-align: center;
+    font-weight: bold;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    position: absolute;
+    top: 0;
+    right: -15px;
+    border: 2px solid white;
+    box-sizing: border-box;
+    padding: 8px;
+    background: red;
+    line-height: 1.3;
+    background-color: #f24423;
+}
+
+
+.player-cards {
+	display: inline-block;
+	position: relative;
+
+	width: 250px;
+	/* height: 140px; */
+	margin: 20px 0;
+}
+
+.player-cards img {
+	width: 100%;
+}
+
+.cards > div{
+	display: inline-block;
+}
+
+.cards > div:last-child {
+	margin-left: -50px;
+	margin-top: 10px;
+	position: absolute;
+}
+
+.player-info {
+	background: darkslategray;
+	position: absolute;
+	top: 20px;
+	left: 92px;
+	min-width: 150px;
+	height: 60px;
+	text-align: center;
+	border-radius: 0 6px 6px 0;
+	box-sizing: content-box;
+	padding: 7px;
+}
+
+.player-info > h3 {
+	border-bottom: 1px solid lightslategrey;
+	margin-bottom: 0;
+	white-space: nowrap;
+}
+
+.chips-color {
+	color: lawngreen;
+}
+
+.pot {
+	background-color: #2f4f4fc7;
+	padding: 5px 20px;
+	border-radius: 10px;
+}
+
+.bet {
+	height: 20px;
+	font-size: 20px;
+	border-radius: 10px;
+	background-color: #2f605173;
+	padding: 5px 20px;
+	box-sizing: content-box;
+	display: flex;
+	margin: 10px 0;
+}
+
+.bet img {
+	height: 100%;
+}
+

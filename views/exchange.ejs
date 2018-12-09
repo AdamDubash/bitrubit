@@ -1,0 +1,198 @@
+<% layout('./layout/page.ejs')%>
+<% block('title', "Обмен валют") %>
+<% block('vue', true) %>
+
+<div id="exchangeApp">
+    <h3 class="text-center">Обмен валют</h3>
+    
+    <div class="infoblock">
+        <p>Курс <span class="text">1 BTC</span> = {{ course }} руб</p>
+        <p>Резерв <span class="text-success">BTC</span> = {{ reserves.btc }}</p>
+        <p>Резерв <span class="text-warning">QIWI</span> = {{ reserves.qiwi }}</p>
+    </div>
+    
+    <h5 class="text-center mt-4 mb-0">Выберите курс</h5>
+    <p class="text-center mb-2"><small>(отдаете - получаете)</small></p>
+    <div class="infoblock">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="exampleRadios" value="qiwi-btc" v-model="selectedCourse" id="lbQiwiBtc" checked>
+            <label class="form-check-label" for="lbQiwiBtc">
+                <span class="text-warning">QIWI</span> - <span class="text-success">BTC</span>
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="exampleRadios" value="btc-qiwi" v-model="selectedCourse" id="lbBtcQiwi">
+            <label class="form-check-label" for="lbBtcQiwi">
+                <span class="text-success">BTC</span> - <span class="text-warning">QIWI</span>
+            </label>
+        </div>
+    </div>
+    
+    <form class="infoblock mt-3" action="/" v-if="selectedCourse !== 'btc-qiwi'">
+        <div class="exchange-block">
+            <h5><small>отдаете </small> <span class="text-warning">QIWI</span></h5>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">Отдаете</div>
+                    </div>
+                    <input type="number" class="form-control form-control-sm"  placeholder="min: <%=limits.qiwi.min%> RUB" v-model="qiwibtc.amount">
+                </div>
+            </div>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">QIWI адрес</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm"  placeholder="+79876665544" v-model="qiwibtc.sourceAddress">
+                </div>
+            </div>
+        </div>
+    
+        <div class="exchange-block">
+            <h5><small>получаете </small> <span class="text-success">BTC</span></h5>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">Получаете</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm"  placeholder="0.000"
+                        readonly v-model="destBtc">
+                </div>
+            </div>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">BTC адрес</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" placeholder="BTC address" v-model="qiwibtc.destAddress">
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <form class="infoblock mt-3" action="/" v-if="selectedCourse === 'btc-qiwi'">
+        <div class="exchange-block">
+            <h5><small>отдаете </small> <span class="text-success">BTC</span></h5>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">Отдаете</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" placeholder="min: <%=limits.btc.min%>" v-model="btcqiwi.amount    ">
+                </div>
+            </div>
+        </div>
+        <div class="exchange-block">
+            <h5><small>получаете </small> <span class="text-warning">QIWI</span></h5>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">Получаете</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm"  placeholder="0 RUB"
+                        readonly v-model="destQiwi">
+                </div>
+            </div>
+            <div>
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend sm">
+                        <div class="input-group-text">QIWI адрес</div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm"  placeholder="+79876665544" v-model="btcqiwi.destAddress">
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <div class="exchange-button mt-3"><button class="my-btn" @click="exchange" :disabled="loading">Обменять</button></div>
+    
+</div>
+
+<script>
+    // (() => {
+        const app = new Vue({
+            el: "#exchangeApp",
+            data() {
+                return {
+                    loading: false,
+                    selectedCourse: "qiwi-btc",
+                    course: 0,
+                    reserves: {
+                        btc: 0,
+                        qiwi: 0
+                    },
+                    "qiwibtc": {
+                        amount: null,
+                        sourceAddress: "",
+                        destAddress: ""
+                    },
+                    "btcqiwi": {
+                        amount: null,
+                        destAddress: ""
+                    }
+                }
+            },
+
+            computed: {
+                destBtc: function() {
+                    return (this.qiwibtc.amount / this.course).toFixed(8)
+                },
+                destQiwi: function(){
+                    return ~~(this.course * this.btcqiwi.amount)
+                } 
+            },
+
+            methods: {
+                exchange() {
+                    this.loading = true
+
+                    if(this.selectedCourse === 'qiwi-btc') {
+                        sendExchangeRequest(this.selectedCourse, this.qiwibtc)
+                        return
+                    }
+
+                    if(this.selectedCourse === 'btc-qiwi') {
+                        sendExchangeRequest(this.selectedCourse, this.btcqiwi)
+                        return
+                    }
+                }
+            }
+        })
+
+        const updateCourse = async () => {
+            const res = await fetch("/exchange/course")
+            const course = await res.json()
+
+            console.log(course)
+
+            app.course = course.course
+            app.reserves.btc = course.btc
+            app.reserves.qiwi = course.qiwi
+        }
+
+        updateCourse()
+
+        setInterval(updateCourse, 1000 * 120)
+        
+        const sendExchangeRequest = async (course, data) => {
+
+            fetch('/exchange', {
+                method: 'post',
+                body: JSON.stringify({course, data}),
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(async (res) => {
+                app.loading = false
+                if (!res.ok) throw res
+                
+                location.href = await res.text()
+            }).catch(err => {
+                err.text().then(errMsg => alert(errMsg))
+            })
+        };
+    // })()
+
+</script>

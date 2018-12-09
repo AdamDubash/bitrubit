@@ -1,0 +1,91 @@
+{
+  "server": {
+    "sitename": "RuBitGames",
+    "hostname": "localhost",
+    "port": 3000
+  },
+  "mongoose": {
+    "uri": "mongodb://localhost:27017/supersite"
+  },
+  "telegram": {
+    "token": "611238132:AAELpwNQqmQluU4xCyvsiZB1xoXAnCQMuek"
+  },
+  "btcw": {
+    "token": "dOfojmaPL56Jtk0VWj09PHb8Vz6DKe",
+    "url": "http://185.82.219.95:8080/api"
+  },
+  "qiwi": {
+    "phone": "+79375913200",
+    "token": "1e612c1aafeb32ead8a478677ced676e",
+    "hookId": "",
+    "secret": "JcyVhjHCvHQwufz+IHXolyqHgEc5MoayBfParl6Guoc="
+  },
+  "autoOut": {
+    "btc": {
+      "address": "false",
+      "amount": "0.011"
+    },
+    "rub": {
+      "address": "false",
+      "amount": "5000"
+    }
+  },
+  "cashOut": {
+    "btc": {
+      "min": 0.001,
+      "max": 1
+    },
+    "rub": {
+      "min": 200,
+      "max": 10000
+    }
+  },
+  "gameBet": {
+    "rub": {
+      "min": 50,
+      "max": 10000
+    },
+    "virt": {
+      "min": 50,
+      "max": 10000
+    },
+    "btc": {
+      "min": 0.001,
+      "max": 1
+    }
+  },
+  "titles": {
+    "checkers": "Шашки",
+    "chess": "Шахматы",
+    "poker": "Покер",
+    "seabattle": "Морской бой",
+    "bl": "Нарды длинные",
+    "lotto": "Лото",
+    "poker1x1": "Покер 1x1",
+    "jackpot": "Джекпот-рулетка",
+    "jackpot-rub": "[RUB] Рулетка",
+    "jackpot-btc": "[BTC] Рулетка"
+  },
+  "exchange": {
+    "procent": 4,
+    "qiwi": {
+      "phone": "+79375913200",
+      "token": "1e612c1aafeb32ead8a478677ced676e",
+      "hookId": "",
+      "secret": "JcyVhjHCvHQwufz+IHXolyqHgEc5MoayBfParl6Guoc="
+    },
+    "btc": {
+      "token": "dOfojmaPL56Jtk0VWj09PHb8Vz6DZZ",
+      "url": "http://185.82.219.95:8080/api"
+    },
+    "limits": {
+      "qiwi": {
+        "min": 1000
+      },
+      "btc": {
+        "min": 0.001
+      }
+    },
+    "waitingMinutes": 10
+  }
+}

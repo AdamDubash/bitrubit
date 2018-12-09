@@ -1,0 +1,147 @@
+<nav class="nav" id="menu">
+    <div class="btn_hide_vpanel" onclick="toggleNav()">
+        <span class="nav_btn_hide_caption">скрыть</span>
+    </div>
+    <ul class="nav_list">
+     
+        <li class="nav_list_item nav_list_item-selected nav_list_item_sublist" onclick="dropdown(this)">
+            <img src="/icons/nav_games.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body ">
+                <div class="nav_list_item_header"><a href="/games">Игры</a></div>
+                <ul>
+                    <li>
+                        <a href="/games/chess">Шахматы</a>
+                    </li>
+                    <li>
+                        <a href="/games/bl">Нарды</a>
+                    </li>
+                    <li>
+                        <a href="/games/poker1x1">Покер 1х1</a>
+                    </li>
+                    <hr class="m-1">
+                    <li>
+                        <a href="/games/mp/jackpot-rub1">[RUB] Рулетка #1</a>
+                    </li>
+                    <li>
+                        <a href="/games/mp/jackpot-rub2">[RUB] Рулетка #2</a>
+                    </li>
+                    <li>
+                        <a href="/games/mp/jackpot-rub3">[RUB] Рулетка #3</a>
+                    </li>
+                    <hr class="m-1">
+                    <li>
+                        <a href="/games/mp/jackpot-btc1">[BTC] Рулетка #1</a>
+                    </li>
+                    <li>
+                        <a href="/games/mp/jackpot-btc2">[BTC] Рулетка #2</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        
+
+        <% if (user) {%>
+        <li class="nav_list_item  nav_list_item_sublist nav_list_item_sublist" onclick="dropdown(this)">
+            <img src="/icons/nav_profile.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body ">
+                <div class="nav_list_item_header">Профиль</div>
+                <ul>
+                    <li>
+                        <a href="/profile">Статистика</a>
+                    </li>
+                    <li>
+                        <a href="/profile/cashin">Пополнить баланс</a>
+                    </li>
+                    <li>
+                        <a href="/profile/cashout">Вывести</a>
+                    </li>
+                    <li>
+                        <a href="/profile/notifications">Уведомления (<%=unreadNotifs%>)</a>
+                    </li>
+                    <% if(user.strategies.local.email) {%>
+                    <li>
+                        <a href="/profile/updatepass/">Сменить пароль</a>
+                    </li>
+                    <%}%>
+                    <li>
+                        <a href="/logout">Выйти</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <%} else {%>
+        <a href="/login" class="nav_list_item">
+            <img src="/icons/nav_profile.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body">
+                <div class="nav_list_item_header">Войти</div>
+            </div>
+        </a>
+        <%}%>
+
+        <a href="/rules" class="nav_list_item">
+            <img src="/icons/nav_rules.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body">
+                <div class="nav_list_item_header">Правила</div>
+            </div>
+        </a>
+        <a href="/contacts" class="nav_list_item">
+            <img src="/icons/nav_support.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body">
+                <div class="nav_list_item_header">Контакты</div>
+            </div>
+        </a>
+        <a href="/exchange" class="nav_list_item">
+            <img src="/icons/nav_exchange.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body">
+                <div class="nav_list_item_header">Обменник</div>
+            </div>
+        </a>
+
+        <% if (user && user.isAdmin) {%>
+        <li class="nav_list_item  nav_list_item_sublist nav_list_item_sublist" onclick="dropdown(this)">
+            <img src="/icons/nav_profile.png" class="nav_list_item_logo">
+            <div class="nav_list_item_body ">
+                <div class="nav_list_item_header">Админ</div>
+                <ul>
+                    <li>
+                        <a href="/admin/users">Пользователи</a>
+                    </li>
+                    <li>
+                        <a href="/admin/money">Финансы</a>
+                    </li>
+                    <li >
+                        <a href="/admin/payments/">Вводы/выводы</a>
+                    </li>
+                    <li>
+                        <a href="/admin/history/">История игр</a>
+                    </li>
+                    <li>
+                        <a href="/admin/gamesconf/">Конфигурация игр</a>
+                    </li>
+                    <li>
+                        <a href="/admin/exchange/">Обмен</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </li>
+        <%} %>
+    </ul>
+    <script>
+        (() => {
+            const pathLength = window.location.pathname.indexOf('/mp/') >= 0 ? 4 : 3;
+            const link = window.location.pathname.split('/').slice(0, pathLength).join('/');
+            // $(`.verticalNav a[href ^= "${link}"]`)[0].parentNode.classList.add('selectedNavRow');
+        })();
+
+        const toggleNav = () => {
+            $('.nav')[0].classList.toggle('vpanel-hidden');
+        }
+
+        const dropdown = (el) => {
+            el.classList.toggle('nav_list_item_sublist-shown');
+        }
+
+    </script>
+</nav>
+

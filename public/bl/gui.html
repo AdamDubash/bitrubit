@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+
+    <script>
+        var board, game;
+
+        window.onload = function() {
+            const moveHandler = function() {
+                console.log(this.currentMoves);
+            };
+
+            game  = new Logic(moveHandler);
+            board = new LongBackgammon('cont', game);
+
+            //imagine we get 'start' object { color: 'w', dices: [3,5]
+            board.start([3,5], 'w', 'w');
+            board.nextTurn([3,5], 'w');
+        }
+    </script>
+<div class="container" id="cont"></div>
+</body>
+</html>

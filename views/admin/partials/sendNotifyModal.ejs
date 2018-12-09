@@ -1,0 +1,44 @@
+<div class="modal fade" id="messageEditorModal" tabindex="-1" role="dialog" aria-labelledby="joinRoomModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="joinRoomModalLongTitle">Отправить сообщение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <form method="post" name="messageEditorForm" onsubmit="sendnotify(); return false">
+                    <label for="messageDestination">Получатель ID</label>
+                    <input type="text" name="destination" readonly value="0" id="messageDestination" class="form-control mb-2">
+                    <textarea name="message"  rows="10" style="width: 100%"></textarea>
+
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="sumbmit" class="btn btn-primary">Отправить</button>
+                    </div>
+                </form>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sendnotify = async () => {
+            sendAjaxForm('/api/users/sendnotif', "messageEditorForm", async (err, res) => {
+                if (err) {
+                    alert("Ошибка на стороне сервера!")
+                    console.log(err);
+                    return
+                }
+                const data = await res.text();
+
+                alert(data)
+            })
+        }
+    </script>
+</div>
